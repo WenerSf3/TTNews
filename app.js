@@ -13,6 +13,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/logado', (req, res) => {
-    res.sendFile(path.join(__dirname, 'ttn.html'));
-  });
+  console.log(req , res , 'wener')
+});
   
