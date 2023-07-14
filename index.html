@@ -69,11 +69,11 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     function rota1() {
-      let teste;
       if (email && password) {
-        teste = fetch('/logado');
+        fetch('/').then((r)=>{
+          consolelog(r,'wneer')
+        });
       }
-      console.log(teste);
     }
     function login() {
       let email = document.getElementById('email').value;
