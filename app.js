@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/logado', (req, res) => {
-  console.log(req , res , 'wener')
+app.get('/a', (req, res) => {
+  return res;
 });
   
