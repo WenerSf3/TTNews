@@ -72,7 +72,7 @@
       let password = document.getElementById('password').value;
 
       if (email && password) {
-        window.location.href = '../ttn.html';
+        fetch('http://154.56.41.121:3000/logado').then('sucesso').catch('loss')
       }
     }
 

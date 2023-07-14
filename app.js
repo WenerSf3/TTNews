@@ -9,8 +9,10 @@ app.listen(PORT, () => {
 });
 
 app.get('/', (req, res) => {
-console.log(__dirname, 'index.html')
-setTimeout(() => {
   res.sendFile(path.join(__dirname, 'index.html'));
-}, 10000);
 });
+
+app.get('/logado', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ttn.html'));
+  });
+  
