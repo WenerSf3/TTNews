@@ -72,7 +72,14 @@
       let password = document.getElementById('password').value;
 
       if (email && password) {
-        fetch('http://154.56.41.121:3000/logado').then('sucesso').catch('loss')
+        fetch('/logado')
+          .then(response => response.text())
+          .then(html => {
+            console.log(html);
+          })
+          .catch(error => {
+            console.log('Erro:', error);
+          });
       }
     }
 
