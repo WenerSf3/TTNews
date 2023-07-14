@@ -9,6 +9,8 @@ app.listen(PORT, () => {
 });
 
 app.get('/', (req, res) => {
+console.log(__dirname, 'index.html')
+setTimeout(() => {
   res.sendFile(path.join(__dirname, 'index.html'));
-  console.log(__dirname, 'index.html')
+}, 10000);
 });
