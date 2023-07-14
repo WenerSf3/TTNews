@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/a', (req, res) => {
+app.post('/a', (req, res) => {
   return res;
 });
   
