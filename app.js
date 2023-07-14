@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 // Define a rota POST para o caminho "/a"
 app.post('/a', (req, res) => {
-  res.send('Rota POST para /a');
+  res.send('Requisição POST feita para /a');
 });
 
 // Outras rotas (exemplo)
