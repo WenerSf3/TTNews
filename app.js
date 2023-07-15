@@ -1,3 +1,4 @@
+const playwright = require('playwright');
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -21,8 +22,19 @@ app.post('/a', (req, res) => {
 });
 
 // Outras rotas (exemplo)
-app.get('/b', (req, res) => {
-  res.send('Rota GET para /b');
+app.get('/b', async (req, res) => {
+
+  browser = await playwright.firefox.launch({ headless: false });
+  page = await browser.newPage();
+  await page.goto('https://qxbroker.com/en/sign-in/');
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('textbox', { name: 'Password' }).fill(password);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  console.log('clicou aeeeeeeeeeee');
+  browser.close();
+
+
 });
 
 app.put('/c', (req, res) => {
