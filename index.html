@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=, initial-scale=1.0">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-    <h1 id="contador"></h1>
+    <button onclick="testar()">iniciar</button>
     <script>
-        let contador = 0;
-        const elementoContador = document.getElementById('contador');
+        function testar() {
+            fetch('http://154.56.41.121:3000/b')
+        .then((response) => {
+            console.log(response, 'deu certo')
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+        });
 
-        function atualizarContador() {
-            contador++;
-            elementoContador.textContent = contador;
         }
-
-        setInterval(atualizarContador, 1000); // Chama a função atualizarContador a cada 1 segundo (1000 ms)
     </script>
 </body>
 </html>
