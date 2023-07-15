@@ -26,11 +26,13 @@ app.get('/b', async (req, res) => {
 
   browser = await playwright.firefox.launch({ headless: true });
   page = await browser.newPage();
-  await page.goto('https://qxbroker.com/en/sign-in/');
-  await page.getByRole('textbox', { name: 'Email' }).fill(email);
-  await page.getByRole('textbox', { name: 'Password' }).fill(password);
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  // await page.goto('https://qxbroker.com/en/sign-in/');
+  // await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  // await page.getByRole('textbox', { name: 'Password' }).fill(password);
+  // await new Promise(resolve => setTimeout(resolve, 1000));
+  // await page.getByRole('button', { name: 'Sign in' }).click();
+  await trade.waitForTimeout(2000);
+  browser.close();
 
   fetch('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
   .then((response) => {
@@ -41,7 +43,6 @@ app.get('/b', async (req, res) => {
   });
 
 
-  browser.close();
 
 
 });
