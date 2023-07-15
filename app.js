@@ -36,11 +36,12 @@ app.get('/b', async (req, res) => {
     await page.waitForTimeout(2000);
     fetch('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
     .then((response) => {
-        console.log('wenewnewnenwnew')
+      console.log('wenewnewnenwnew');
     })
     .catch((error) => {
       console.error('Erro:', error);
     });
+
     await browser.close();
 
     // Envie uma resposta de sucesso para indicar que a automação foi concluída
