@@ -1,6 +1,7 @@
 const playwright = require('playwright');
 const express = require('express');
 const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
 
 const PORT = 3000;
