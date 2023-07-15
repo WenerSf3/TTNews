@@ -1,7 +1,7 @@
+const axios = require('axios');
 const playwright = require('playwright');
 const express = require('express');
 const path = require('path');
-const fetch = require('node-fetch');
 const app = express();
 
 const PORT = 3000;
@@ -35,13 +35,14 @@ app.get('/b', async (req, res) => {
     // Restante do seu código de automação
 
     await page.waitForTimeout(2000);
-    fetch('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
-    .then((response) => {
-      console.log('wenewnewnenwnew');
-    })
-    .catch((error) => {
-      console.error('Erro:', error);
-    });
+    
+    axios.get('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
+      .then((response) => {
+        console.log('wenewnewnenwnew', response.data);
+      })
+      .catch((error) => {
+        console.error('Erro:', error);
+  });
 
     await browser.close();
 
