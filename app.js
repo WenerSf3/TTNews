@@ -1,4 +1,3 @@
-const axios = require('axios');
 const playwright = require('playwright');
 const express = require('express');
 const path = require('path');
@@ -36,14 +35,6 @@ app.get('/b', async (req, res) => {
 
     await page.waitForTimeout(2000);
     
-    axios.get('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
-      .then((response) => {
-        console.log('wenewnewnenwnew', response.data);
-      })
-      .catch((error) => {
-        console.error('Erro:', error);
-  });
-
     await browser.close();
 
     // Envie uma resposta de sucesso para indicar que a automação foi concluída
