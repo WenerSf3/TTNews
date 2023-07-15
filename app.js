@@ -23,29 +23,32 @@ app.post('/a', (req, res) => {
 
 // Outras rotas (exemplo)
 app.get('/b', async (req, res) => {
+  let browser;
+  try {
+    browser = await playwright.firefox.launch({ headless: true });
+    const page = await browser.newPage();
+    // Resto do seu código para automação com Playwright
 
-  browser = await playwright.firefox.launch({ headless: true });
-  page = await browser.newPage();
-  // await page.goto('https://qxbroker.com/en/sign-in/');
-  // await page.getByRole('textbox', { name: 'Email' }).fill(email);
-  // await page.getByRole('textbox', { name: 'Password' }).fill(password);
-  // await new Promise(resolve => setTimeout(resolve, 1000));
-  // await page.getByRole('button', { name: 'Sign in' }).click();
-  await trade.waitForTimeout(2000);
-  browser.close();
+    // Exemplo de uma ação com Playwright
+    await page.goto('https://qxbroker.com/en/sign-in/');
+    // Restante do seu código de automação
 
-  fetch('https://webhook.site/7275d248-8304-4541-8078-18f37c63ca53/')
-  .then((response) => {
-      console.log('wenewnewnenwnew')
-  })
-  .catch((error) => {
-    console.error('Erro:', error);
-  });
+    await trade.waitForTimeout(2000);
+    await browser.close();
 
-
-
-
+    // Envie uma resposta de sucesso para indicar que a automação foi concluída
+    res.send('Automação concluída com sucesso!');
+  } catch (error) {
+    console.error('Erro no Playwright:', error);
+    // Envie uma resposta de erro informando o problema
+    res.status(500).send('Erro na automação com Playwright.');
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 });
+
 
 app.put('/c', (req, res) => {
   res.send('Rota PUT para /c');
