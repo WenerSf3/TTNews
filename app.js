@@ -10,9 +10,9 @@ app.listen(PORT, () => {
 
 // Define a rota GET para o caminho raiz ("/")
 app.get('/', (req, res) => {
-  res.send('Requisição GET feita para /');
+  // res.send('Requisição GET feita para /');
   
-  // res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Define a rota POST para o caminho "/a"
