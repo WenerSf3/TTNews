@@ -33,7 +33,7 @@ app.get('/b', async (req, res) => {
     await page.goto('https://qxbroker.com/en/sign-in/');
     // Restante do seu código de automação
 
-    await trade.waitForTimeout(2000);
+    await page.waitForTimeout(2000);
     await browser.close();
 
     // Envie uma resposta de sucesso para indicar que a automação foi concluída
