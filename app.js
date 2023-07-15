@@ -36,9 +36,6 @@ app.get('/b', async (req, res) => {
   .then((response) => {
       console.log('wenewnewnenwnew')
   })
-  .then((data) => {
-    console.log(data); // Aqui você pode fazer o que desejar com a resposta recebida
-  })
   .catch((error) => {
     console.error('Erro:', error);
   });
