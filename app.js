@@ -41,13 +41,14 @@ app.get('/b', async (req, res) => {
   } catch (error) {
     console.error('Erro no Playwright:', error);
     // Envie uma resposta de erro informando o problema
-    res.status(500).send('Erro na automação com Playwright.');
+    res.status(500).send(`Erro na automação com Playwright: ${error.message}`);
   } finally {
     if (browser) {
       await browser.close();
     }
   }
 });
+
 
 
 app.put('/c', (req, res) => {
