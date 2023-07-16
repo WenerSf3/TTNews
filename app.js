@@ -1,9 +1,23 @@
 const playwright = require('playwright');
+const mysql = require('mysql2');
 const express = require('express');
 const path = require('path');
 const app = express();
 
-const PORT = 3000;
+const connection = mysql.createConnection({
+  host: 'db4free.net',
+  user: 'genosgx',
+  password: '12345678',
+  database: 'ggxttn',
+  port: 3306
+});
+
+app.use(express.json()); // Middleware para interpretar o corpo da requisição como JSON
+
+let browser;
+let page;
+
+const PORT = 8000;
 
 app.listen(PORT, () => {
   console.log(`API rodando na porta ${PORT}`);
@@ -11,51 +25,92 @@ app.listen(PORT, () => {
 
 // Define a rota GET para o caminho raiz ("/")
 app.get('/', (req, res) => {
-  // res.send('Requisição GET feita para /');
-  
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Define a rota POST para o caminho "/a"
 app.post('/a', (req, res) => {
-  res.send('Requisição POST feita para /a');
+  res.send({ error: 's' });
 });
 
 // Outras rotas (exemplo)
 app.get('/b', async (req, res) => {
-  let browser;
-  try {
-    browser = await playwright.firefox.launch({ headless: true });
-    const page = await browser.newPage();
-    // Resto do seu código para automação com Playwright
+  browser = await playwright.firefox.launch({ headless: false });
+  page = await browser.newPage();
+  // Resto do seu código para automação com Playwright
 
-    // Exemplo de uma ação com Playwright
-    await page.goto('https://qxbroker.com/en/sign-in/');
-    // Restante do seu código de automação
+  // Exemplo de uma ação com Playwright
+  await page.goto('https://qxbroker.com/en/sign-in/');
+  await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
+  await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
-    await page.waitForTimeout(2000);
-    
-    await browser.close();
+  setTimeout(() => {
+    const verify = page.locator("#graph");
 
-    // Envie uma resposta de sucesso para indicar que a automação foi concluída
-    res.send('Automação concluída com sucesso!');
-  } catch (error) {
-    console.error('Erro no Playwright:', error);
-    // Envie uma resposta de erro informando o problema
-    res.status(500).send(`Erro na automação com Playwright: ${error.message}`);
-  } finally {
-    if (browser) {
-      await browser.close();
+    let obg = {
+      msg: 'SIM Automação concluída com sucesso!',
+      success: true
     }
-  }
+    let obg2 = {
+      msg: 'NAO Automação concluída com sucesso!',
+      success: false
+    }
+    if (verify) {
+      res.send(obg);
+    } else {
+      res.send(obg2);
+    }
+  }, 3000);
 });
 
+app.post('/c', async (req, res) => {
+  const obj = req.body; // Atribuir o objeto enviado no corpo da requisição a 'obj'
 
+  await page.locator(".input-control-cabinet__input").fill(obj.codigo);
+  
+  await page.locator(".button.button--primary.button--spaced").click();
 
-app.put('/c', (req, res) => {
-  res.send('Rota PUT para /c');
+  let chamouFuncao = false;
+  await page.waitForNavigation({ timeout: 0 });
+  let newUrl = page.url();
+  
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  let i = 0;
+  const interval = setInterval(async () => {
+      i += 1;
+    
+      if (newUrl != 'https://qxbroker.com/en/sign-in/' && !chamouFuncao) {
+          chamouFuncao = true;
+          clearInterval(interval);
+          res.send('LOGADO!');
+      }
+    //   newUrl = page.url();
+      if(i >6){
+        res.status(404).json('codigo incorreto');
+      }
+      
+  }, 2000);
+  // Enviar o objeto como resposta usando res.json()
 });
 
-app.delete('/d', (req, res) => {
-  res.send('Rota DELETE para /d');
+app.post('/closettn', (req, res) => {
+    browser.close();
+    res.send('ttn fechado');
 });
+
+app.post('/call', async (req, res) => {
+    await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
+
+    res.send('compra executada');
+
+});
+
+app.post('/put', async (req, res) => {
+    await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
+    
+    res.send('Venda executada');
+
+});
+// res.status(200).json(obj);

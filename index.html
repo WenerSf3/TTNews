@@ -1,25 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=
-    , initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <button onclick="testar()">iniciar</button>
+    <button onclick="fun1()">FECHAR TTN</button>
+    <button onclick="fun2()">INICIAR TTN && LOGIN</button>
+    <button onclick="compra()">compra</button>
+    <button onclick="venda()">venda</button>
     <script>
-        function testar() {
-            fetch('http://154.56.41.121:3000/b')
-        .then((response) => {
-            console.log(response, 'deu certo')
-        })
-        .catch((error) => {
-            console.error('Erro:', error);
-        });
+        function fun1() {
+            fetch('http://localhost:8000/closettn',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+             })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
         }
+        function fun2() {
+            fetch('http://localhost:8000/b')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success == false) {
+                    const cod_verify = prompt('Digite algo:');
+                    if(cod_verify){
+                        let verify = codigo(cod_verify);
+                        
+                        if(verify != "LOGADO"){
+                            cod_verify = prompt('Digite algo:');
+                            verify = codigo(cod_verify);
+                            if(verify != "LOGADO"){
+                                cod_verify = prompt('Digite algo:');
+                                verify = codigo(cod_verify);
+                                if(data.verify != "LOGADO"){
+                                    fetch('http://localhost:8000/closettn', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({codigo:cod_verify})
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            return console.log('sucess');
+                                        })
+                                        .catch(error => {
+                                            return console.log('error' , error);
+
+                                            
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        function codigo(cod_verify) {
+            fetch('http://localhost:8000/c', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({codigo:cod_verify})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            return console.log(data);
+                        })
+                        .catch(error => {
+                            window.alert('Codigo incorreto insira o codigo novamente');
+                            
+                        });
+        }
+        function fun3() {
+            fetch('http://localhost:8000/c')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        function compra() {
+            fetch('http://localhost:8000/call',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+             })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        function venda() {
+            fetch('http://localhost:8000/put',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+             })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+
     </script>
 </body>
+
 </html>
