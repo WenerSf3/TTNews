@@ -23,6 +23,14 @@ app.listen(PORT, () => {
   console.log(`API rodando na porta ${PORT}`);
 });
 
+// Configuração do CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 // Define a rota GET para o caminho raiz ("/")
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
