@@ -47,7 +47,9 @@ app.post('/login', async (req, res) => {
     );
 
     if (account.length !== 0) {
-      res.sendFile(path.join(__dirname, 'index.html'));
+      browser = await playwright.firefox.launch({ headless: true });
+      status = true;
+      res.status(200).json({ success: true, message: 'Logado!' });
     } else {
       res.status(404).json({ success: false, message: 'Usuário não encontrado' });
     }
@@ -59,8 +61,6 @@ app.post('/login', async (req, res) => {
 
 // Outras rotas (exemplo)
 app.get('/TTNstart', async (req, res) => {
-  browser = await playwright.firefox.launch({ headless: true });
-  status = true;
 
   page = await browser.newPage();
   await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
