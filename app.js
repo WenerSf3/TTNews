@@ -127,13 +127,37 @@ app.post('/call', async (req, res) => {
 
 app.post('/put', async (req, res) => {
     if(status == false){
-      res.send('Ttn esta fechado!');
       res.status(404).json({Ttn:false,message:'TTn está fechado'});
-
     }
     await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
     
     res.send('Venda executada');
+
+});
+
+app.post('/cambio', async (req, res) => {
+  const obj = req.body;
+
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+  }
+  await trade.locator(".asset-select__button").click();
+  await trade.waitForTimeout(1000);
+  await trade.locator(".asset-select__search-input").fill(String(obj.ativo));
+  await trade.waitForTimeout(1000);
+  await trade.locator(".assets-table__name").click();
+  
+  res.send('Ativo trocado com sucesso!');
+
+});
+
+app.post('/call', async (req, res) => {
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+  }
+  await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
+
+  res.send('compra executada');
 
 });
 // res.status(200).json(obj);
