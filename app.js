@@ -141,11 +141,11 @@ app.post('/cambio', async (req, res) => {
   if(status == false){
     res.status(404).json({Ttn:false,message:'TTn está fechado'});
   }
-  await trade.locator(".asset-select__button").click();
-  await trade.waitForTimeout(1000);
-  await trade.locator(".asset-select__search-input").fill(String(obj.ativo));
-  await trade.waitForTimeout(1000);
-  await trade.locator(".assets-table__name").click();
+  await page.locator(".asset-select__button").click();
+  await page.waitForTimeout(1000);
+  await page.locator(".asset-select__search-input").fill(String(obj.ativo));
+  await page.waitForTimeout(1000);
+  await page.locator(".assets-table__name").click();
   
   res.send('Ativo trocado com sucesso!');
 
