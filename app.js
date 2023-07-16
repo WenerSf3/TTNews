@@ -16,6 +16,7 @@ app.use(express.json()); // Middleware para interpretar o corpo da requisição 
 
 let browser;
 let page;
+let status = false;
 
 const PORT = 8000;
 
@@ -44,6 +45,7 @@ app.post('/a', (req, res) => {
 // Outras rotas (exemplo)
 app.get('/b', async (req, res) => {
   browser = await playwright.firefox.launch({ headless: true });
+  status = true;
   page = await browser.newPage();
   // Resto do seu código para automação com Playwright
 
@@ -104,11 +106,19 @@ app.post('/c', async (req, res) => {
 });
 
 app.post('/closettn', (req, res) => {
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+  }
     browser.close();
-    res.send('ttn fechado');
+    status = false;
+
+    res.send('Ttn fechado');
 });
 
 app.post('/call', async (req, res) => {
+    if(status == false){
+      res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    }
     await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
     res.send('compra executada');
@@ -116,6 +126,11 @@ app.post('/call', async (req, res) => {
 });
 
 app.post('/put', async (req, res) => {
+    if(status == false){
+      res.send('Ttn esta fechado!');
+      res.status(404).json({Ttn:false,message:'TTn está fechado'});
+
+    }
     await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
     
     res.send('Venda executada');
