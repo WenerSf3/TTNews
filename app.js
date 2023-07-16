@@ -11,8 +11,9 @@ const connection = mysql.createConnection({
   database: 'ggxttn',
   port: 3306
 });
+let database = connection.promise();
 
-app.use(express.json()); // Middleware para interpretar o corpo da requisição como JSON
+app.use(express.json());
 
 let browser;
 let page;
@@ -24,7 +25,6 @@ app.listen(PORT, () => {
   console.log(`API rodando na porta ${PORT}`);
 });
 
-// Configuração do CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -32,25 +32,41 @@ app.use((req, res, next) => {
   next();
 });
 
-// Define a rota GET para o caminho raiz ("/")
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Define a rota POST para o caminho "/a"
 app.post('/a', (req, res) => {
   res.send({ error: 's' });
+});
+
+// login
+app.post('/login', async (req, res) => {
+  const request = req.body;
+  
+  try {
+    const [account] = await database.query(
+      'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
+      [request.email, request.password, request.key]
+    );
+
+    if (account.length !== 0) {
+      res.sendFile(path.join(__dirname, 'index.html'));
+    } else {
+      res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Erro no servidor' });
+  }
 });
 
 // Outras rotas (exemplo)
 app.get('/b', async (req, res) => {
   browser = await playwright.firefox.launch({ headless: true });
   status = true;
-  page = await browser.newPage();
-  // Resto do seu código para automação com Playwright
 
-  // Exemplo de uma ação com Playwright
-  await page.goto('https://qxbroker.com/en/sign-in/');
+  page = await browser.newPage();
   await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
   await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -76,7 +92,7 @@ app.get('/b', async (req, res) => {
 });
 
 app.post('/c', async (req, res) => {
-  const obj = req.body; // Atribuir o objeto enviado no corpo da requisição a 'obj'
+  const obj = req.body;
 
   await page.locator(".input-control-cabinet__input").fill(obj.codigo);
   
@@ -96,18 +112,18 @@ app.post('/c', async (req, res) => {
           clearInterval(interval);
           res.send('LOGADO!');
       }
-    //   newUrl = page.url();
+
       if(i >6){
         res.status(404).json('codigo incorreto');
       }
       
   }, 2000);
-  // Enviar o objeto como resposta usando res.json()
+
 });
 
 app.post('/closettn', (req, res) => {
   if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
     browser.close();
     status = false;
@@ -117,7 +133,7 @@ app.post('/closettn', (req, res) => {
 
 app.post('/call', async (req, res) => {
     if(status == false){
-      res.status(404).json({Ttn:false,message:'TTn está fechado'});
+      res.status(404).json({Ttn:false,message:'TTN está fechado'});
     }
     await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
@@ -127,7 +143,7 @@ app.post('/call', async (req, res) => {
 
 app.post('/put', async (req, res) => {
     if(status == false){
-      res.status(404).json({Ttn:false,message:'TTn está fechado'});
+      res.status(404).json({Ttn:false,message:'TTN está fechado'});
     }
     await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
     
@@ -139,7 +155,7 @@ app.post('/cambio', async (req, res) => {
   const obj = req.body;
 
   if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
   await page.locator(".asset-select__button").click();
   await page.waitForTimeout(1000);
@@ -150,14 +166,3 @@ app.post('/cambio', async (req, res) => {
   res.send('Ativo trocado com sucesso!');
 
 });
-
-app.post('/call', async (req, res) => {
-  if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
-  }
-  await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
-
-  res.send('compra executada');
-
-});
-// res.status(200).json(obj);

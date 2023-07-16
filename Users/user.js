@@ -107,7 +107,7 @@ app.post('/c', async (req, res) => {
 
 app.post('/closettn', (req, res) => {
   if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
     browser.close();
     status = false;
@@ -117,7 +117,7 @@ app.post('/closettn', (req, res) => {
 
 app.post('/call', async (req, res) => {
     if(status == false){
-      res.status(404).json({Ttn:false,message:'TTn está fechado'});
+      res.status(404).json({Ttn:false,message:'TTN está fechado'});
     }
     await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
@@ -125,21 +125,11 @@ app.post('/call', async (req, res) => {
 
 });
 
-app.post('/put', async (req, res) => {
-    if(status == false){
-      res.status(404).json({Ttn:false,message:'TTn está fechado'});
-    }
-    await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
-    
-    res.send('Venda executada');
-
-});
-
 app.post('/cambio', async (req, res) => {
   const obj = req.body;
 
   if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
   await page.locator(".asset-select__button").click();
   await page.waitForTimeout(1000);
@@ -151,9 +141,19 @@ app.post('/cambio', async (req, res) => {
 
 });
 
+app.post('/put', async (req, res) => {
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
+  }
+  await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
+  
+  res.send('Venda executada');
+
+});
+
 app.post('/call', async (req, res) => {
   if(status == false){
-    res.status(404).json({Ttn:false,message:'TTn está fechado'});
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
   await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
