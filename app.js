@@ -48,8 +48,12 @@ app.post('/login', async (req, res) => {
 
     if (account.length !== 0) {
       browser = await playwright.firefox.launch({ headless: true });
-      status = true;
-      res.status(200).json({ success: true, message: 'Logado!' });
+      if(browser){
+        status = true;
+        res.status(200).json({ success: true, message: 'Logado!' });
+      }
+      res.status(404).json({ success: false, message: 'Erro no TTN' });
+  
     } else {
       res.status(404).json({ success: false, message: 'Usuário não encontrado' });
     }
