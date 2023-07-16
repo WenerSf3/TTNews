@@ -35,7 +35,7 @@ app.post('/a', (req, res) => {
 
 // Outras rotas (exemplo)
 app.get('/b', async (req, res) => {
-  browser = await playwright.firefox.launch({ headless: false });
+  browser = await playwright.firefox.launch({ headless: true });
   page = await browser.newPage();
   // Resto do seu código para automação com Playwright
 
