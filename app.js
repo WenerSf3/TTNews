@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  res.send({ error: 'OK' });
+  res.send('OK');
 });
 
 // login
