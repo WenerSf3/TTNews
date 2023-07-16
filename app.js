@@ -33,11 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.post('/a', (req, res) => {
-  res.send({ error: 's' });
+  res.send({ error: 'OK' });
 });
 
 // login
@@ -62,7 +58,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Outras rotas (exemplo)
-app.get('/b', async (req, res) => {
+app.get('/TTNstart', async (req, res) => {
   browser = await playwright.firefox.launch({ headless: true });
   status = true;
 
@@ -91,7 +87,7 @@ app.get('/b', async (req, res) => {
   }, 3000);
 });
 
-app.post('/c', async (req, res) => {
+app.post('/VerifyCode', async (req, res) => {
   const obj = req.body;
 
   await page.locator(".input-control-cabinet__input").fill(obj.codigo);
@@ -121,7 +117,7 @@ app.post('/c', async (req, res) => {
 
 });
 
-app.post('/closettn', (req, res) => {
+app.post('/TTNclose', (req, res) => {
   if(status == false){
     res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
@@ -131,7 +127,7 @@ app.post('/closettn', (req, res) => {
     res.send('Ttn fechado');
 });
 
-app.post('/call', async (req, res) => {
+app.post('/Call', async (req, res) => {
     if(status == false){
       res.status(404).json({Ttn:false,message:'TTN está fechado'});
     }
@@ -141,7 +137,7 @@ app.post('/call', async (req, res) => {
 
 });
 
-app.post('/put', async (req, res) => {
+app.post('/Put', async (req, res) => {
     if(status == false){
       res.status(404).json({Ttn:false,message:'TTN está fechado'});
     }
@@ -151,7 +147,7 @@ app.post('/put', async (req, res) => {
 
 });
 
-app.post('/cambio', async (req, res) => {
+app.post('/AlterCambio', async (req, res) => {
   const obj = req.body;
 
   if(status == false){
