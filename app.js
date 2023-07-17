@@ -26,11 +26,19 @@ app.listen(PORT, () => {
 });
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+  const allowedOrigins = ['http://localhost:8080', 'http://154.56.41.121'];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   next();
 });
+
 
 app.get('/', (req, res) => {
   res.send('OK');
@@ -67,6 +75,7 @@ app.post('/login', async (req, res) => {
 app.get('/TTNstart', async (req, res) => {
 
   page = await browser.newPage();
+  await page.goto('https://qxbroker.com/en/sign-in/');
   await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
   await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
   await new Promise(resolve => setTimeout(resolve, 1000));
