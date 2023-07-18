@@ -160,6 +160,26 @@ app.post('/Put', async (req, res) => {
 
 });
 
+app.post('/hors', async (req, res) => {
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
+  }
+  const horarioData = await global.$eval(".server-time.online", (element) =>
+      element.textContent.trim()
+    );
+    // console.log('passou aqui 02' )
+    const horarioRegex = /(\d{2}:\d{2}:\d{2})/;
+    const match = horarioData.match(horarioRegex);
+    const horario = match ? match[1] : null;
+
+    res.status(404).json({Ttn:false,hour:horario});
+    
+  // await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
+  
+  res.send('Venda executada');
+
+});
+
 app.post('/AlterCambio', async (req, res) => {
   const obj = req.body;
 
