@@ -74,12 +74,10 @@ app.post('/login', async (req, res) => {
 // Outras rotas (exemplo)
 app.get('/TTNstart', async (req, res) => {
   if (status == false) {
-    res.status(404).json({ error: 'esta deslogado' });
+      return res.status(404).json({ error: 'esta deslogado' });
   } else {
     if (!browser) {
-      res.status(404).json({ error: 'esta deslogado' });
-    }else{
-      return
+      return res.status(404).json({ error: 'esta deslogado' });
     }
   }
 
