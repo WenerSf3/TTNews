@@ -147,6 +147,9 @@ app.post('/TTNclose', (req, res) => {
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
+  if(!page){
+    return res.status(200).json({ error: 'ja esta fechado' });
+  }
   page.close();
 
   res.send('Ttn fechado');
