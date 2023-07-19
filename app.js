@@ -73,7 +73,9 @@ app.post('/login', async (req, res) => {
 
 // Outras rotas (exemplo)
 app.get('/TTNstart', async (req, res) => {
-
+  if(!browser){
+    res.status(404).json({ error: 'Nao fez login' });
+  }
   page = await browser.newPage();
   await page.goto('https://qxbroker.com/en/sign-in/');
   await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
