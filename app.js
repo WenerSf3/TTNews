@@ -189,6 +189,9 @@ app.post('/hors', async (req, res) => {
     if (status == false) {
       return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
     }
+    if(!page){
+      return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    }
   }
 
   const hors = await page.locator('.server-time.online');
