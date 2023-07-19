@@ -76,6 +76,9 @@ app.get('/TTNstart', async (req, res) => {
   if(!browser){
     res.status(404).json({ error: 'Nao fez login' });
   }
+  if(page){
+    return;
+  }
   page = await browser.newPage();
   await page.goto('https://qxbroker.com/en/sign-in/');
   await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
@@ -143,6 +146,9 @@ app.post('/TTNclose', (req, res) => {
 
 app.post('/logout', (req, res) => {
   if(status == false){
+    if(browser){
+      browser.close();
+    }
     res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
     browser.close();
