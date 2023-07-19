@@ -83,10 +83,6 @@ app.get('/TTNstart', async (req, res) => {
       return res.status(200).json({ error: 'ja esta aberto' });
     }
   }
-
-    if (page) {
-      return;
-    }
     page = await browser.newPage();
     await page.goto('https://qxbroker.com/en/sign-in/');
     await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
@@ -148,10 +144,9 @@ app.post('/TTNclose', (req, res) => {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   if(!page){
-    return res.status(200).json({ error: 'ja esta fechado' });
+    return res.status(200).json({ msg: 'ja esta fechado' });
   }
   page.close();
-
   res.send('Ttn fechado');
 });
 
