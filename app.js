@@ -58,18 +58,18 @@ app.post('/login', async (req, res) => {
       browser = await playwright.firefox.launch({ headless: true });
       if (browser) {
         status = true;
-        res.status(200).json({ success: true, message: 'Logado!' });
+        return res.status(200).json({ success: true, message: 'Logado!' });
       }
-      res.status(404).json({ success: false, message: 'Erro no TTN' });
-
-    } else {
-      res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+      return res.status(404).json({ success: false, message: 'Erro no TTN' });
     }
+
+    return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Erro no servidor' });
+    return res.status(500).json({ success: false, message: 'Erro no servidor' });
   }
 });
+
 
 // Outras rotas (exemplo)
 app.get('/TTNstart', async (req, res) => {
