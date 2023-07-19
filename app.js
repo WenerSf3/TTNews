@@ -77,9 +77,9 @@ app.get('/TTNstart', async (req, res) => {
     res.status(404).json({ error: 'esta deslogado' });
   } else {
     if (!browser) {
-      return
+      res.status(404).json({ error: 'esta deslogado' });
     }else{
-      res.status(404).json({ error: 'Ja esta aberto' });
+      return
     }
   }
 
