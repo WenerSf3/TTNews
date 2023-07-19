@@ -133,7 +133,7 @@ app.post('/VerifyCode', async (req, res) => {
     }
 
     if (i > 6) {
-      res.status(404).json('codigo incorreto');
+      return res.status(404).json('codigo incorreto');
     }
 
   }, 2000);
@@ -142,7 +142,7 @@ app.post('/VerifyCode', async (req, res) => {
 
 app.post('/TTNclose', (req, res) => {
   if (status == false) {
-    res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   page.close();
 
@@ -154,7 +154,7 @@ app.post('/logout', (req, res) => {
     if (browser) {
       browser.close();
     }
-    res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   browser.close();
   status = false;
@@ -164,7 +164,7 @@ app.post('/logout', (req, res) => {
 
 app.post('/Call', async (req, res) => {
   if (status == false) {
-    res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
@@ -174,7 +174,7 @@ app.post('/Call', async (req, res) => {
 
 app.post('/Put', async (req, res) => {
   if (status == false) {
-    res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   await page.locator(".button.button--danger.button--spaced.put-btn.section-deal__button").click();
 
@@ -183,8 +183,12 @@ app.post('/Put', async (req, res) => {
 });
 
 app.post('/hors', async (req, res) => {
-  if (status == false) {
-    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+  if (!browser) {
+    return res.status(404).json({ Ttn: false, message: 'Esta desloggado!' });
+  }else{
+    if (status == false) {
+      return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    }
   }
 
   const hors = await page.locator('.server-time.online');
@@ -205,7 +209,7 @@ app.post('/AlterCambio', async (req, res) => {
   const obj = req.body;
 
   if (status == false) {
-    res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   await page.locator(".asset-select__button").click();
   await page.waitForTimeout(1000);
