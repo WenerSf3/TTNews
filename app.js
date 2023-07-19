@@ -135,6 +135,15 @@ app.post('/TTNclose', (req, res) => {
     res.status(404).json({Ttn:false,message:'TTN está fechado'});
   }
     page.close();
+
+    res.send('Ttn fechado');
+});
+
+app.post('/logout', (req, res) => {
+  if(status == false){
+    res.status(404).json({Ttn:false,message:'TTN está fechado'});
+  }
+    browser.close();
     status = false;
 
     res.send('Ttn fechado');
