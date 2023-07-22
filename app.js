@@ -87,7 +87,7 @@ app.post('/TTNstart', async (req, res) => {
 
   if (page) {
     browser.close();
-    browser = await playwright.firefox.launch({ headless: false });
+    browser = await playwright.firefox.launch({ headless: true });
     page = await browser.newPage();
   }else{
     page = await browser.newPage();
@@ -110,7 +110,7 @@ app.post('/TTNstart', async (req, res) => {
       msg: 'NAO Automação concluída com sucesso!',
       success: false
     }
-    
+
     if (verify) {
       return res.status(200).json(verify);
 
