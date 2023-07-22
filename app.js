@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     );
 
     if (account.length !== 0) {
-      browser = await playwright.firefox.launch({ headless: true });
+      browser = await playwright.firefox.launch({ headless: false });
       if (browser) {
         status = true;
         return res.status(200).json({ success: true, message: 'Logado!' });
@@ -76,42 +76,46 @@ app.post('/login', async (req, res) => {
 
 
 // Outras rotas (exemplo)
-app.get('/TTNstart', async (req, res) => {
+app.post('/TTNstart', async (req, res) => {
   if (status == false) {
-      return res.status(404).json({ error: 'esta deslogado' });
+    return res.status(404).json({ error: 'esta deslogado' });
   } else {
     if (!browser) {
       return res.status(404).json({ error: 'esta deslogado' });
     }
-    if(page){
-      return res.status(200).json({ error: 'ja esta aberto' });
-    }
   }
+
+  if (page) {
+    browser.close();
+    browser = await playwright.firefox.launch({ headless: false });
     page = await browser.newPage();
-    await page.goto('https://qxbroker.com/en/sign-in/');
-    await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
-    await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    await page.getByRole('button', { name: 'Sign in' }).click();
+  }else{
+    page = await browser.newPage();
+  }
+  await page.goto('https://qxbroker.com/en/sign-in/');
+  await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
+  await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await page.getByRole('button', { name: 'Sign in' }).click();
 
-    setTimeout(() => {
-      const verify = page.locator("#graph");
+  setTimeout(() => {
+    const verify = page.locator("#graph");
 
-      let obg = {
-        msg: 'SIM Automação concluída com sucesso!',
-        success: true
-      }
-      let obg2 = {
-        msg: 'NAO Automação concluída com sucesso!',
-        success: false
-      }
-      if (verify) {
-        res.send(obg);
-      } else {
-        res.send(obg2);
-      }
-    }, 4000);
-  });
+    let obg = {
+      msg: 'SIM Automação concluída com sucesso!',
+      success: true
+    }
+    let obg2 = {
+      msg: 'NAO Automação concluída com sucesso!',
+      success: false
+    }
+    if (verify) {
+      res.send(obg);
+    } else {
+      res.send(obg2);
+    }
+  }, 4000);
+});
 
 app.post('/VerifyCode', async (req, res) => {
   const obj = req.body;
@@ -147,7 +151,7 @@ app.post('/TTNclose', (req, res) => {
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  if(!page){
+  if (!page) {
     return res.status(200).json({ msg: 'ja esta fechado' });
   }
   page.close();
@@ -190,11 +194,11 @@ app.post('/Put', async (req, res) => {
 app.post('/hors', async (req, res) => {
   if (!browser) {
     return res.status(404).json({ Ttn: false, message: 'Esta desloggado!' });
-  }else{
+  } else {
     if (status == false) {
       return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
     }
-    if(!page){
+    if (!page) {
       return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
     }
   }
