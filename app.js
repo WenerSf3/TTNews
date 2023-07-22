@@ -99,7 +99,6 @@ app.post('/TTNstart', async (req, res) => {
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   try {
-    // Tente localizar o seletor com um tempo máximo de espera de 3 segundos.
     await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 3000 });
 
     let verify = {
