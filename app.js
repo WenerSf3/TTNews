@@ -161,7 +161,7 @@ app.post('/TTNclose', (req, res) => {
     return res.status(200).json({ msg: 'ja esta fechado' });
   }
   page.close();
-  res.send('Ttn fechado');
+  return res.status(200).json({ msg: 'TTN foi fechado com sucesso' });
 });
 
 app.post('/logout', (req, res) => {
@@ -174,7 +174,7 @@ app.post('/logout', (req, res) => {
   browser.close();
   status = false;
 
-  res.send('Ttn fechado');
+  return res.status(200).json({ msg: 'logout realizado com sucesso' });
 });
 
 app.post('/Call', async (req, res) => {
