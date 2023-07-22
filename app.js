@@ -98,27 +98,25 @@ app.post('/TTNstart', async (req, res) => {
   await new Promise(resolve => setTimeout(resolve, 1000));
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  setTimeout(() => {
-    const verify = {
-      page : page.locator("#graph"),
+  try {
+    // Tente localizar o seletor com um tempo máximo de espera de 3 segundos.
+    await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 3000 });
+
+    let verify = {
+      msg: 'Falta verificação!',
+      success: false
+    };
+
+    return res.status(404).json({verify});
+  } catch (error) {
+    let verify = {
       msg: 'SIM Automação concluída com sucesso!',
       success: true
-  };
+    };
 
-    const not_verify = {
-      page : page.locator("#graph"),
-      msg: 'NAO Automação concluída com sucesso!',
-      success: false
-    }
+    return res.status(200).json(verify);
 
-    if (verify) {
-      return res.status(200).json(verify);
-
-    } else {
-      return res.status(200).json(not_verify);
-
-    }
-  }, 4000);
+  }
 });
 
 app.post('/VerifyCode', async (req, res) => {
@@ -140,14 +138,18 @@ app.post('/VerifyCode', async (req, res) => {
     if (newUrl != 'https://qxbroker.com/en/sign-in/' && !chamouFuncao) {
       chamouFuncao = true;
       clearInterval(interval);
-      res.send('LOGADO!');
+      let verify = {
+        msg: 'Logado com sucesso!',
+        success: true
+      };
+      return res.status(200).json(verify);
     }
 
-    if (i > 6) {
+    if (i > 5) {
       return res.status(404).json('codigo incorreto');
     }
 
-  }, 2000);
+  }, 1500);
 
 });
 
