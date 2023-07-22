@@ -30,7 +30,7 @@ app.listen(PORT, () => {
 
 
 app.use((req, res, next) => {
-  const allowedOrigins = [`http://${IP}:8080`, `http://${IP_PRODUCT}`];
+  const allowedOrigins = [`http://${IP}:8080`, `http://${IP}`];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
