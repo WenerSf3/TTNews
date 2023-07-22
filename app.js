@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     );
 
     if (account.length !== 0) {
-      browser = await playwright.firefox.launch({ headless: false });
+      browser = await playwright.firefox.launch({ headless: true });
       if (browser) {
         status = true;
         return res.status(200).json({ success: true, message: 'Logado!' });
