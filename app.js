@@ -77,44 +77,39 @@ app.post('/login', async (req, res) => {
 
 // Outras rotas (exemplo)
 app.post('/TTNstart', async (req, res) => {
-  if (status == false) {
-    return res.status(404).json({ error: 'esta deslogado' });
-  } else {
-    if (!browser) {
+  try {
+    if (status == false || !browser) {
       return res.status(404).json({ error: 'esta deslogado' });
     }
-  }
 
-  if (page) {
-    browser.close();
-    browser = await playwright.firefox.launch({ headless: true });
-    page = await browser.newPage();
-  }else{
-    page = await browser.newPage();
-  }
-  await page.goto('https://qxbroker.com/en/sign-in/');
-  await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
-  await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  await page.getByRole('button', { name: 'Sign in' }).click();
+    if (page) {
+      browser.close();
+      browser = await playwright.firefox.launch({ headless: true });
+      page = await browser.newPage();
+    } else {
+      page = await browser.newPage();
+    }
 
-  try {
-    await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 3000 });
+    await page.goto('https://qxbroker.com/en/sign-in/');
+    await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
+    await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await page.getByRole('button', { name: 'Sign in' }).click();
 
-    let verify = {
-      msg: 'Falta verificação!',
-      success: false
-    };
-
-    return res.status(404).json({verify});
-  } catch (error) {
+    await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 4000 });
     let verify = {
       msg: 'SIM Automação concluída com sucesso!',
       success: true
     };
 
     return res.status(200).json(verify);
+  } catch (error) {
+    let verify = {
+      msg: 'Falta verificação!',
+      success: false
+    };
 
+    return res.status(404).json({ verify });
   }
 });
 
