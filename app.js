@@ -11,6 +11,8 @@ const connection = mysql.createConnection({
   database: 'ggxttn',
   port: 3306
 });
+require('dotenv').config();
+
 let database = connection.promise();
 
 app.use(express.json());
@@ -19,14 +21,16 @@ let browser;
 let page;
 let status = false;
 
-const PORT = 8000;
+const PORT = process.env.PORT;
+const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
 
 app.listen(PORT, () => {
-  console.log(`API rodando na porta ${PORT}`);
+  console.log(`API rodando em http://${IP}:${PORT}`);
 });
 
+
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:8080', 'http://154.56.41.121'];
+  const allowedOrigins = [`http://${IP}:8080`, `http://${IP_PRODUCT}`];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
@@ -106,7 +110,7 @@ app.get('/TTNstart', async (req, res) => {
       } else {
         res.send(obg2);
       }
-    }, 3000);
+    }, 4000);
   });
 
 app.post('/VerifyCode', async (req, res) => {

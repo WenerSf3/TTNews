@@ -18,10 +18,11 @@ let browser;
 let page;
 let status = false;
 
-const PORT = 8001;
+const PORT = process.env.PORT || 8001;
+const IP_ADDRESS = process.env.IP_ADDRESS || '192.168.0.100';
 
 app.listen(PORT, () => {
-  console.log(`API rodando na porta ${PORT}`);
+  console.log(`API rodando em http://${IP_ADDRESS}:${PORT}`);
 });
 
 // Configuração do CORS
