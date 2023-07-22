@@ -99,20 +99,24 @@ app.post('/TTNstart', async (req, res) => {
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   setTimeout(() => {
-    const verify = page.locator("#graph");
-
-    let obg = {
+    const verify = {
+      page : page.locator("#graph"),
       msg: 'SIM Automação concluída com sucesso!',
       success: true
-    }
-    let obg2 = {
+  };
+
+    const not_verify = {
+      page : page.locator("#graph"),
       msg: 'NAO Automação concluída com sucesso!',
       success: false
     }
+    
     if (verify) {
-      res.send(obg);
+      return res.status(200).json(verify);
+
     } else {
-      res.send(obg2);
+      return res.status(200).json(not_verify);
+
     }
   }, 4000);
 });
