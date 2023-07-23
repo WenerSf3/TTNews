@@ -103,7 +103,7 @@ app.post('/TTNstart', async (req, res) => {
       const elementText = await element.innerText();
     
       if (elementText.trim().length > 0) {
-        return res.status(200).json('conta incorreta');
+        return res.status(200).json({msg: 'conta incorreta',success: 'fail_1'});
       }
     } catch (error) {
       console.log('passou')
@@ -115,7 +115,7 @@ app.post('/TTNstart', async (req, res) => {
       console.log('fez login');
       let verify = {
         msg: 'Falta verificação!',
-        success: false
+        success: 'fail_2'
       };
 
       return res.status(200).json(verify);
