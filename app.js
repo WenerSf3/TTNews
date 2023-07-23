@@ -191,30 +191,30 @@ app.post('/Put', async (req, res) => {
 
 });
 
-app.post('/hors', async (req, res) => {
-  if (!browser) {
-    return res.status(404).json({ Ttn: false, message: 'Esta desloggado!' });
-  } else {
-    if (status == false) {
-      return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
-    }
-    if (!page) {
-      return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
-    }
-  }
+// app.post('/hors', async (req, res) => {
+//   if (!browser) {
+//     return res.status(404).json({ Ttn: false, message: 'Esta desloggado!' });
+//   } else {
+//     if (status == false) {
+//       return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+//     }
+//     if (!page) {
+//       return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+//     }
+//   }
 
-  const hors = await page.locator('.server-time.online');
-  const preco_atual = await hors.innerText();
-  const horarioRegex = /(\d{2}:\d{2}:\d{2})/;
-  const match = preco_atual.match(horarioRegex);
-  const horario = match ? match[1] : null;
+//   const hors = await page.locator('.server-time.online');
+//   const preco_atual = await hors.innerText();
+//   const horarioRegex = /(\d{2}:\d{2}:\d{2})/;
+//   const match = preco_atual.match(horarioRegex);
+//   const horario = match ? match[1] : null;
 
-  if (horario) {
-    return res.status(200).json({ Ttn: false, hour: horario });
-  }
+//   if (horario) {
+//     return res.status(200).json({ Ttn: false, hour: horario });
+//   }
 
-  res.send('Venda executada');
-});
+//   res.send('Venda executada');
+// });
 
 
 app.post('/AlterCambio', async (req, res) => {
