@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     );
 
     if (account.length !== 0) {
-      browser = await playwright.firefox.launch({ headless: true });
+      browser = await playwright.firefox.launch({ headless: false });
       if (browser) {
         status = true;
         return res.status(200).json({ success: true, message: 'Logado!' });
@@ -84,33 +84,57 @@ app.post('/TTNstart', async (req, res) => {
 
     if (page) {
       browser.close();
-      browser = await playwright.firefox.launch({ headless: true });
+      browser = await playwright.firefox.launch({ headless: false });
       page = await browser.newPage();
     } else {
       page = await browser.newPage();
     }
 
     await page.goto('https://qxbroker.com/en/sign-in/');
-    await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
-    await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
+    await page.getByRole('textbox', { name: 'Email' }).fill('ph0197470@gmail.com');
+    await page.getByRole('textbox', { name: 'Password' }).fill('@2023lol');
     await new Promise(resolve => setTimeout(resolve, 1000));
     await page.getByRole('button', { name: 'Sign in' }).click();
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    console.log('clicou em login');
 
-    await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 4000 });
-    let verify = {
-      msg: 'SIM Automação concluída com sucesso!',
-      success: true
-    };
+    try {
+      const element = await page.$('form > .modal-sign__input > .hint.-danger');
+      const elementText = await element.innerText();
+    
+      if (elementText.trim().length > 0) {
+        return res.status(200).json('conta incorreta');
+      }
+    } catch (error) {
+      console.log('passou')
+    }
 
-    return res.status(200).json(verify);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 2000 });
+      console.log('fez login');
+      let verify = {
+        msg: 'Falta verificação!',
+        success: false
+      };
+
+      return res.status(200).json(verify);
+    } catch (error) {
+      console.log('erro no login', error);
+
+      let verify = {
+        msg: 'SIM Automação concluída com sucesso!',
+        success: true
+      };
+
+      return res.status(200).json(verify);
+    }
+    
   } catch (error) {
-    let verify = {
-      msg: 'Falta verificação!',
-      success: false
-    };
-
-    return res.status(404).json({ verify });
+    console.log('erro ao criar a página', error);
+    return res.status(500).json({ error: 'Erro interno do servidor' });
   }
+    
 });
 
 app.post('/VerifyCode', async (req, res) => {
