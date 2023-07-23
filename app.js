@@ -91,8 +91,8 @@ app.post('/TTNstart', async (req, res) => {
     }
 
     await page.goto('https://qxbroker.com/en/sign-in/');
-    await page.getByRole('textbox', { name: 'Email' }).fill('ph0197470@gmail.com');
-    await page.getByRole('textbox', { name: 'Password' }).fill('@2023lol');
+    await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
+    await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
     await new Promise(resolve => setTimeout(resolve, 1000));
     await page.getByRole('button', { name: 'Sign in' }).click();
     await new Promise(resolve => setTimeout(resolve, 2500));
