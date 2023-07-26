@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const express = require('express');
 const path = require('path');
 const app = express();
+const { startTime } = require('./config/events.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -46,6 +47,19 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
   res.send('OK');
+});
+
+app.post('/preparingEvent',(req , res) => {
+  const request = req.body;
+
+
+  if(request.status == 'start'){
+    startTime('start');
+    res.send('STARTED');
+  }else{
+    startTime('stop');
+    res.send('STOPED');
+  }
 });
 
 // login
