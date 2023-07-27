@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const express = require('express');
 const path = require('path');
 const app = express();
-const { startTime } = require('./config/events.js')
+const { search_event } = require('./config/events.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -54,15 +54,14 @@ app.post('/preparingEvent',(req , res) => {
 
 
   if(request.status == 'start'){
-    startTime('start');
+    search_event(page);
     res.send('STARTED');
   }else{
-    startTime('stop');
+    search_event(page);
     res.send('STOPED');
   }
 });
 
-// login
 app.post('/login', async (req, res) => {
   const request = req.body;
 
@@ -88,8 +87,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-// Outras rotas (exemplo)
 app.post('/TTNstart', async (req, res) => {
   try {
     if (status == false || !browser) {
