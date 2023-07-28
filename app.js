@@ -54,10 +54,10 @@ app.post('/preparingEvent',(req , res) => {
 
 
   if(request.status == 'start'){
-    search_event(page);
+    search_event(page, 'start');
     res.send('STARTED');
   }else{
-    search_event(page);
+    search_event(page,'stop');
     res.send('STOPED');
   }
 });
