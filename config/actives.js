@@ -1,42 +1,21 @@
 const playwright = require("playwright");
+const moment = require('moment');
 
 async function getActive(active) {
-  browser = await playwright.firefox.launch({ headless: true });
-  page = await browser.newPage();
 
-  switch (active) {
-    case "EURUSD":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-
-      break;
-    case "GBPUSD":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-
-      break;
-    case "EURJPY":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-
-      break;
-    case "AUDCAD":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-
-      break;
-    case "USDJPY":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-
-      break;
-    case "EURGBP":
-      await page.goto("https://br.tradingview.com/symbols/" + active + "/");
-      break;
-
-    default:
-      break;
-  }
-  let price = await page.locator(".last-JWoJqCpY.js-symbol-last");
-  price = await price.innerText();
-  await page.close();
+    const webActive = await playwright.firefox.launch({ headless: true });
+    const page = await webActive.newPage();
+    
+    await page.goto(`https://br.tradingview.com/symbols/${active}/`);
+    
+    const priceElement = await page.locator(".last-JWoJqCpY.js-symbol-last");
+    await page.waitForTimeout(700);
+    const price = await priceElement.innerText();
+    console.log('peguei -->', moment().format('mm:ss'))
   
-  console.log(`${active} price --->, ${price}`);
-
+    await webActive.close();
+    return price;
+  
 }
+
 exports.getActive = getActive;
