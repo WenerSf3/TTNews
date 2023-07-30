@@ -54,7 +54,6 @@ async function search_event(page, status) {
     preparing_event(page, null, "stop");
   }
 }
-search_event(null,'start');
 
 function preparing_event(page, event, argument) {
 
