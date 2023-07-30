@@ -29,7 +29,6 @@ app.listen(PORT, () => {
   console.log(`API rodando em http://${IP}:${PORT}`);
 });
 
-
 app.use((req, res, next) => {
   const allowedOrigins = [`http://${IP}:8080`, `http://${IP}`];
   const origin = req.headers.origin;
@@ -51,6 +50,7 @@ app.get('/', (req, res) => {
 
 app.post('/preparingEvent', (req, res) => {
   const request = req.body;
+
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
