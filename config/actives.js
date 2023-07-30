@@ -9,7 +9,7 @@ async function getActive(active) {
     await page.goto(`https://br.tradingview.com/symbols/${active}/`);
     
     const priceElement = await page.locator(".last-JWoJqCpY.js-symbol-last");
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(1000);
     const price = await priceElement.innerText();
     console.log('peguei -->', moment().format('mm:ss'))
   

@@ -49,17 +49,25 @@ app.get('/', (req, res) => {
   res.send('OK');
 });
 
-app.post('/preparingEvent',(req , res) => {
+app.post('/preparingEvent', (req, res) => {
   const request = req.body;
-
-
-  if(request.status == 'start'){
+  if (status == false) {
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+  }
+  if (!page) {
+    return res.status(200).json({ msg: 'TTN está fechado' });
+  }
+  if (request.argument == 'start' && !global.startQueryEvent) {
+    global.startQueryEvent = true; 
     search_event(page, 'start');
     res.send('STARTED');
-  }else{
-    search_event(page,'stop');
+  } else if(request.argument == 'stop' && global.startQueryEvent) {
+    global.startQueryEvent = false; 
+    search_event(page, 'stop');
     res.send('STOPED');
   }
+  res.send('item já executado ou parado');
+
 });
 
 app.post('/login', async (req, res) => {
@@ -112,9 +120,9 @@ app.post('/TTNstart', async (req, res) => {
     try {
       const element = await page.$('form > .modal-sign__input > .hint.-danger');
       const elementText = await element.innerText();
-    
+
       if (elementText.trim().length > 0) {
-        return res.status(200).json({msg: 'conta incorreta',success: 'fail_1'});
+        return res.status(200).json({ msg: 'conta incorreta', success: 'fail_1' });
       }
     } catch (error) {
       console.log('passou')
@@ -140,12 +148,12 @@ app.post('/TTNstart', async (req, res) => {
 
       return res.status(200).json(verify);
     }
-    
+
   } catch (error) {
     console.log('erro ao criar a página', error);
     return res.status(500).json({ error: 'Erro interno do servidor' });
   }
-    
+
 });
 
 app.post('/VerifyCode', async (req, res) => {
@@ -182,15 +190,37 @@ app.post('/VerifyCode', async (req, res) => {
 
 });
 
-app.post('/TTNclose', (req, res) => {
+app.post('/changeBank', async (req, res) => {
+  const request = req.body;
+
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   if (!page) {
     return res.status(200).json({ msg: 'ja esta fechado' });
   }
+  let url = page.url();
+
+  if (url != 'https://qxbroker.com/en/demo-trade/' && request.bank == 'demo') {
+    await page.goto('https://qxbroker.com/en/demo-trade/');
+    return res.status(200).json({ msg: 'Conta trocada para Demo' });
+  } else if (url != 'https://qxbroker.com/en/trade/' && request.bank == 'real') {
+    await page.goto('https://qxbroker.com/en/trade/');
+    return res.status(200).json({ msg: 'Conta trocada para real' });
+  }
+  return res.status(200).json({ msg: 'Sua conta já esta onde deseja!' });
+});
+
+app.post('/TTNclose', (req, res) => {
+  if (status == false) {
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+  }
+  if (!page) {
+    return res.status(200).json({ msg: 'TTN stá fechado' });
+  }
   page.close();
   return res.status(200).json({ msg: 'TTN foi fechado com sucesso' });
+
 });
 
 app.post('/logout', (req, res) => {

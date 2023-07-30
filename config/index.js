@@ -3,7 +3,7 @@ const playwright = require('playwright');
 
 
 async function pegar_evento() {
-    let browser = await playwright.firefox.launch({ headless: false });
+    let browser = await playwright.firefox.launch({ headless: true });
     let trade = await browser.newPage();
     await trade.goto('https://qxbroker.com/en/sign-in/');
     await trade.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');

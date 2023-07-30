@@ -1,56 +1,94 @@
 const moment = require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
-const query = connection.promise();
+const { insert , deleteEvent } = require("./database");
+const { format } = require("mysql2");
+let database = connection.promise();
 
-let next_hour;
 let now_hour;
 
 async function search_event(page, status) {
-  let interval;
-  if (status == "start") {
-    var [event] = await query.execute(
-      `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) LIMIT 1;`
+  if (status === "start") {
+    const [event] = await database.query(
+      `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
     );
+      console.log(event[0])
+    event.forEach(async (i) => {
+      console.log('evento' ,moment(i.date).format("YYYY-MM-DD HH:mm:ss"))
+      if (moment(i.date).subtract(20, 'seconds') < moment()) {
+        insert(i, 'DONT');
+        deleteEvent(i);
+      }
+    });
     if (event && event.length > 0) {
       const eventTime = moment(event[0].date).format("YYYY-MM-DD HH:mm:ss");
-      now_hour = moment().add(25, "minutes");
-      if (now_hour > eventTime) {
-        preparing_event(page, event ,'start');
+      const nowHour = moment().add(25, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+      if (nowHour > eventTime) {
+        console.log('preparing_event')
+        preparing_event(page, event[0], "start");
       } else {
-        interval = setInterval(async () => {
-          var [evento] = await query.execute(
+        console.log('nao encontrei +25m')
+        const interval = setInterval(async () => {
+          const [evento] = await database.query(
             `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) LIMIT 1;`
           );
-          if (event && event.length > 0) {
-            var eventTime = moment(evento[0].date).format(
-              "YYYY-MM-DD HH:mm:ss"
-            );
-            now_hour = moment().add(25, "minutes");
-            if (now_hour > eventTime) {
-              preparing_event(page, evento, "start");
+
+          if (evento && evento.length > 0) {
+            const eventTime = moment(evento[0].date).format("YYYY-MM-DD HH:mm:ss");
+            const nowHour = moment().add(25, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+            if (nowHour > eventTime) {
+              preparing_event(page, evento[0], "start");
+              clearInterval(interval);
+            }else{
+            console.log('nao encontrei +25m 01')
             }
           }
         }, 1500000);
       }
     } else {
-      clearInterval(interval);
-      preparing_event(page, event ,'stop');
+      console.log('evento nao encontrado')
     }
+  }else{
+    preparing_event(page, null, "stop");
   }
 }
+search_event(null,'start');
 
 function preparing_event(page, event, argument) {
-  if (argument == "start") {
-    setInterval(async () => {
-      if (event && event.length > 0) {
-        var eventTime = moment(event[0].date).format("YYYY-MM-DD HH:mm:ss");
-        now_hour = moment().add(5, "minutes");
-        if (now_hour > eventTime) {
-          startEvent(event, "start", page);
-        }
+
+  if (argument === "start") {
+
+    let preparingtime;
+    let startEvents = false;
+
+    const startEventFunction = () => {
+      console.log('startEvent')
+      startEvent(event, "start", page);
+      clearInterval(preparingtime);
+    };
+
+    const checkStartEvent = () => {
+      const eventTime = moment(event.date).format("YYYY-MM-DD HH:mm:ss");
+      now_hour = moment().add(5, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+      if (now_hour > eventTime && !startEvents) {
+        startEventFunction();
       }
-    }, 300000);
+    };
+
+    if (event) {
+      const eventTime = moment(event.date).format("YYYY-MM-DD HH:mm:ss");
+      now_hour = moment().add(5, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+      if (now_hour > eventTime && !startEvents) {
+        startEventFunction();
+      } else {
+        console.log('nao encontrei +5m 02')
+        preparingtime = setInterval(checkStartEvent, 300000);
+      }
+    }
   } else {
     startEvent(null, "stop", page);
   }

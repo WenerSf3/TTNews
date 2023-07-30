@@ -1,5 +1,9 @@
 const moment = require("moment");
 const { getActive } = require("./actives");
+const { insert , deleteEvent } = require("./database");
+const connection = require("./connection.js");
+let database = connection.promise();
+
 
 let time;
 
@@ -16,7 +20,7 @@ async function startEvent(evento, argument, web) {
     const match = horarioData.match(horarioRegex);
     const horario = match ? match[1] : null;
 
-    const horarioMoment = moment(
+    let horarioMoment = moment(
       `${moment().format("YYYY-MM-DD")} ${horario}`,
       "YYYY-MM-DD HH:mm:ss"
     );
@@ -26,30 +30,41 @@ async function startEvent(evento, argument, web) {
     let time = setInterval(async () => {
       horarioMoment = horarioMoment.add(1, "second");
       missing = hourEvent.diff(horarioMoment, "seconds");
-      if (missing <= 11 && !getPrice) { // -8 segundos
-        global.price = await getActive(evento.active);
+      if (missing <= 8 && !getPrice) {
         getPrice = true;
-      }
-      if (missing <= 3 && !started) { // -2 segundos
-        let self = (parseFloat(global.price) - (evento.pips/100000)).toFixed(5);
-        let buy = (parseFloat(global.price) + (evento.pips/100000)).toFixed(5);
-                
-        await trade.locator(".section-deal__pending").click();
-        await trade.locator(".form-pending-trade__input-text").fill(String(buy));
-        await trade.click(".form-pending-trade__button.green");
-        await trade.waitForTimeout(500);
-        await trade.locator(".form-pending-trade__input-text").fill(String(self));
-        await trade.click(".form-pending-trade__button.red");
+        global.price = await getActive(evento.cambio);
 
-        await trade.click("#graph");
 
-        await trade.click(".deal-list__tab > svg.icon-deal-list-orders");
-        trade.click(".order__button");        
-        await trade.click(".deal-list__tab > svg.icon-deal-list-trades");
+        console.log('opaaaaaaaaa', 'price -->', global.price);
+        console.log('parse -->', parseFloat(global.price), 'pips  -->', evento.pavil, (evento.pavil / 100000).toFixed(5))
+        clearInterval(time);
+        let self = (parseFloat(global.price) - (evento.pavil / 100000)).toFixed(5);
+        let buy = (parseFloat(global.price) + (evento.pavil / 100000)).toFixed(5);
+
+        await web.locator(".section-deal__pending").click();
+        await web.locator(".form-pending-trade__input-text").fill(String(buy));
+        await web.click(".form-pending-trade__button.green");
+        await web.waitForTimeout(500);
+        await web.locator(".form-pending-trade__input-text").fill(String(self));
+        await web.click(".form-pending-trade__button.red");
+
+        await web.click("#graph");
+
+        try {
+          await web.click(".deal-list__tab > svg.icon-deal-list-orders");
+          web.click(".order__button");
+          await web.click(".deal-list__tab > svg.icon-deal-list-trades");
+        } catch (error) {
+          console.log('nao a nada a clicar')
+        }
+        insert(evento, 'WIN');
+        deleteEvent(evento);
 
         started = true;
-        clearInterval(time);
+
       }
+
+
     }, 1000);
   } else {
     clearInterval(time);
@@ -78,7 +93,7 @@ async function startEvent(evento, argument, web) {
 
 //     // console.log('este é o preço buy:', buy)
 //     // console.log('este é o preço self:', self)
-    
+
 
 
 //     trade.waitForTimeout(1000);
