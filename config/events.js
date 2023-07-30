@@ -1,8 +1,7 @@
 const moment = require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
-const { insert , deleteEvent } = require("./database");
-const { format } = require("mysql2");
+const { insert, deleteEvent } = require("./database");
 let database = connection.promise();
 
 let now_hour;
@@ -12,14 +11,23 @@ async function search_event(page, status) {
     const [event] = await database.query(
       `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
     );
-      console.log(event[0])
+
+    let busca = setInterval(() => {
+      if (event.length == 0) {
+        return;
+      } else {
+        clearInterval(busca);
+      }
+    }, 1500000);
+
     event.forEach(async (i) => {
-      console.log('evento' ,moment(i.date).format("YYYY-MM-DD HH:mm:ss"))
+      console.log('evento', moment(i.date).format("YYYY-MM-DD HH:mm:ss"))
       if (moment(i.date).subtract(20, 'seconds') < moment()) {
         insert(i, 'DONT');
         deleteEvent(i);
       }
     });
+
     if (event && event.length > 0) {
       const eventTime = moment(event[0].date).format("YYYY-MM-DD HH:mm:ss");
       const nowHour = moment().add(25, "minutes").format("YYYY-MM-DD HH:mm:ss");
@@ -41,8 +49,8 @@ async function search_event(page, status) {
             if (nowHour > eventTime) {
               preparing_event(page, evento[0], "start");
               clearInterval(interval);
-            }else{
-            console.log('nao encontrei +25m 01')
+            } else {
+              console.log('nao encontrei +25m 01')
             }
           }
         }, 1500000);
@@ -50,11 +58,11 @@ async function search_event(page, status) {
     } else {
       console.log('evento nao encontrado')
     }
-  }else{
+  } else {
     preparing_event(page, null, "stop");
   }
 }
-
+search_event(null, 'start');
 function preparing_event(page, event, argument) {
 
   if (argument === "start") {

@@ -1,11 +1,7 @@
-const moment = require("moment");
 const { getActive } = require("./actives");
 const { insert , deleteEvent } = require("./database");
-const connection = require("./connection.js");
-const { search_event } = require('./events.js')
-let database = connection.promise();
-
-
+const { search_event } = require('./events');
+const moment = require("moment");
 let time;
 
 async function startEvent(evento, argument, web) {
