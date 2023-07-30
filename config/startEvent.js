@@ -1,6 +1,6 @@
 const { getActive } = require("./actives");
 const { insert , deleteEvent } = require("./database");
-const { search_event } = require('./events');
+const { restartBusca } = require('./events');
 const moment = require("moment");
 let time;
 
@@ -58,7 +58,7 @@ async function startEvent(evento, argument, web) {
         deleteEvent(evento);
 
         started = true;
-        search_event(web, 'restart');
+        restartBusca();
       }
 
 

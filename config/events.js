@@ -6,19 +6,26 @@ let database = connection.promise();
 
 let now_hour;
 
-async function search_event(page, status) {
-  if (status === "start" || status === "restart") {
+function restartBusca(page , status) {
+  global.queryevents = false;
+  let busca = setInterval(async () => {
     const [event] = await database.query(
       `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
     );
+    if (event && event.length == 0 && status == "start" && !global.queryevents) {
+      return;
+    } else if(event && event.length > 0 && status == "start" && !global.queryevents) {
+      clearInterval(busca);
+      search_event(page, 'start',event);
+    }else if(status == 'stop'){
+      global.queryevents = true;
+      clearInterval(busca);
+    }
+  }, 1500000);
+}
 
-    let busca = setInterval(() => {
-      if (event.length == 0) {
-        return;
-      } else {
-        clearInterval(busca);
-      }
-    }, 1500000);
+async function search_event(page, status, event) {
+  if (status === "start") {
 
     event.forEach(async (i) => {
       console.log('evento', moment(i.date).format("YYYY-MM-DD HH:mm:ss"))
@@ -101,3 +108,4 @@ function preparing_event(page, event, argument) {
 }
 
 exports.search_event = search_event;
+exports.restartBusca = restartBusca;
