@@ -6,7 +6,7 @@ let database = connection.promise();
 
 let now_hour;
 
-function restartBusca(page , status) {
+function restartBusca(page, status) {
   global.queryevents = false;
   let busca = setInterval(async () => {
     const [event] = await database.query(
@@ -14,10 +14,10 @@ function restartBusca(page , status) {
     );
     if (event && event.length == 0 && status == "start" && !global.queryevents) {
       return;
-    } else if(event && event.length > 0 && status == "start" && !global.queryevents) {
+    } else if (event && event.length > 0 && status == "start" && !global.queryevents) {
       clearInterval(busca);
-      search_event(page, 'start',event);
-    }else if(status == 'stop'){
+      search_event(page, 'start', event);
+    } else if (status == 'stop') {
       global.queryevents = true;
       clearInterval(busca);
     }
