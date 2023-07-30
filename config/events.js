@@ -6,23 +6,33 @@ let database = connection.promise();
 
 let now_hour;
 
-function restartBusca(page, status) {
-  global.queryevents = false;
-  let busca = setInterval(async () => {
-    const [event] = await database.query(
-      `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
-    );
-    if (event && event.length == 0 && status == "start" && !global.queryevents) {
+let buscaInterval;
+
+async function restartBusca(page, status) {
+  if (status === 'start') {
+    if (buscaInterval) {
       return;
-    } else if (event && event.length > 0 && status == "start" && !global.queryevents) {
-      clearInterval(busca);
-      search_event(page, 'start', event);
-    } else if (status == 'stop') {
-      global.queryevents = true;
-      clearInterval(busca);
     }
-  }, 1500000);
+
+    buscaInterval = setInterval(async () => {
+      const [event] = await database.query(
+        `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC LIMIT 1;`
+      );
+
+      if (event.length > 0) {
+        clearInterval(buscaInterval);
+        buscaInterval = undefined;
+        search_event(page, 'start', event[0]);
+      }
+    }, 1500000);
+  } else if (status === 'stop') {
+    if (buscaInterval) {
+      clearInterval(buscaInterval);
+      buscaInterval = undefined;
+    }
+  }
 }
+
 
 async function search_event(page, status, event) {
   if (status === "start") {
