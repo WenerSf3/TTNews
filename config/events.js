@@ -8,7 +8,7 @@ let database = connection.promise();
 let now_hour;
 
 async function search_event(page, status) {
-  if (status === "start") {
+  if (status === "start" || status === "restart") {
     const [event] = await database.query(
       `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
     );

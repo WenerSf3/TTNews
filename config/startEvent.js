@@ -2,6 +2,7 @@ const moment = require("moment");
 const { getActive } = require("./actives");
 const { insert , deleteEvent } = require("./database");
 const connection = require("./connection.js");
+const { search_event } = require('./events.js')
 let database = connection.promise();
 
 
@@ -61,7 +62,7 @@ async function startEvent(evento, argument, web) {
         deleteEvent(evento);
 
         started = true;
-
+        search_event(web, 'restart');
       }
 
 
@@ -71,38 +72,4 @@ async function startEvent(evento, argument, web) {
     console.log("Stoped");
   }
 }
-// async function AllReady(estrategia, id, pips, ativo, trade) {
-//   // console.log('caiu auqi :', preco_atual)
-
-//   await trade.waitForTimeout(1500);
-//   if (estrategia == "doubleguard") {
-//     let retracao = null;
-//     switch (ativo) {
-//       case "EURUSD":
-//         retracao = 0.00001 * pips;
-//         break;
-//       case "GBPUSD":
-//         retracao = 0.00001 * pips;
-//         break;
-//     }
-//     let formatbuy = parseFloat(preco_atual) + retracao;
-//     let buy = formatbuy.toFixed(5);
-
-//     let formatself = parseFloat(preco_atual) - retracao;
-//     let self = formatself.toFixed(5);
-
-//     // console.log('este é o preço buy:', buy)
-//     // console.log('este é o preço self:', self)
-
-
-
-//     trade.waitForTimeout(1000);
-//     trade.click(".order__button");
-//     trade.waitForTimeout(2000);
-//     await query.query(`DELETE FROM Eventos WHERE id = ${id}`);
-//     await trade.click(".deal-list__tab > svg.icon-deal-list-trades");
-//     logado(trade);
-//     // await query.query(`INSERT INTO eventos_passados (id, name_event, pegou, resultado) VALUES (${event}, 'teste', 'sim', 'teste')"`);
-//   }
-// }
 exports.startEvent = startEvent;
