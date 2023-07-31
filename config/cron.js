@@ -19,8 +19,11 @@ async function search_eventCron() {
       let obj = {
         argument: 'start'
       };
-      const response = await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
-      console.log('response -->', response.data);
+      await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj).then((r) => {
+        console.log('response -->', r.data);
+      });
+    }else{
+      console.log('Nenhum evento Próximo');
     }
     process.exit(0);
   } catch (error) {

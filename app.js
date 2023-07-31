@@ -49,24 +49,12 @@ app.get('/', (req, res) => {
 });
 
 app.post('/preparingEvent', (req, res) => {
-  const request = req.body;
 
-  if (status == false) {
+  if (status == false && !page) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  if (!page) {
-    return res.status(200).json({ msg: 'TTN está fechado' });
-  }
-  if (request.argument == 'start' && !global.startQueryEvent) {
-    global.startQueryEvent = true; 
-    search_event(page, 'start');
-    res.send('STARTED');
-  } else if(request.argument == 'stop' && global.startQueryEvent) {
-    global.startQueryEvent = false; 
-    search_event(page, 'stop');
-    res.send('STOPED');
-  }
-  res.send('item já executado ou parado');
+  search_event(page, 'start');
+  return res.send('Ok!');
 
 });
 

@@ -39,17 +39,33 @@ async function startEvent(evento, web) {
 
       await web.click("#graph");
 
-      try {
-        await web.click(".deal-list__tab > svg.icon-deal-list-orders");
-        web.click(".order__button");
-        await web.click(".deal-list__tab > svg.icon-deal-list-trades");
-      } catch (error) {
-        console.log('nao a nada a clicar')
-      }
+      setTimeout(() => {
+        resetSteps(web);
+      }, 11000);
       insert(evento, 'WIN');
       deleteEvent(evento);
+    } else {
+      console.clear()
+      console.log('Aguardando horario!');
     }
   }, 1000);
-  console.log('Evento Concluido!!')
+  console.clear()
+  console.log('Evento Concluido!!');
 }
+async function resetSteps(web) {
+  await web.click(".deal-list__tab > svg.icon-deal-list-orders");
+  await trade.waitForTimeout(500);
+  try {
+    web.click(".order__button");
+  } catch (error) {
+    console.log('nao a nada a clicar')
+  }
+  try {
+    await web.click(".order__button");
+  } catch (error) {
+    console.clear();
+  }
+  await web.click(".deal-list__tab > svg.icon-deal-list-trades");
+}
+
 exports.startEvent = startEvent;

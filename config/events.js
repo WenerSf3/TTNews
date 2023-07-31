@@ -22,7 +22,6 @@ async function search_event(page, argument) {
 
     if (event.length != 0) {
       event.forEach(async (i) => {
-        console.log('evento', moment(i.date).format("YYYY-MM-DD HH:mm:ss"))
         if (moment(i.date).subtract(20, 'seconds') < moment()) {
           insert(i, 'DONT');
           deleteEvent(i);
@@ -39,7 +38,7 @@ async function search_event(page, argument) {
       if (now_hour > eventTime) {
         startEvent(event_, page);
       } else {
-        return;
+        return console.log('evento nao encontrado por perto!');
       }
     }
   }
