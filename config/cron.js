@@ -11,7 +11,7 @@ require('dotenv').config();
 
 function teste() {
 const conteudo = 'Ok';
-const caminhoArquivo = '/home/public_html/TTNews/cron/';
+const caminhoArquivo = './cronfig/';
 
 fs.writeFile(caminhoArquivo, conteudo, (err) => {
     if (err) {
