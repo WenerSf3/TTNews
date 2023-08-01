@@ -1,14 +1,30 @@
 const connection = require("./connection.js");
 let database = connection.promise();
 const axios = require('axios');
+const fs = require('fs');
 require('dotenv').config();
 
-const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
-const PORT = process.env.PORT;
+// const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
+// const PORT = process.env.PORT;
 
+
+
+function teste() {
+const conteudo = 'Ok';
+const caminhoArquivo = '/home/public_html/TTNews/cron/';
+
+fs.writeFile(caminhoArquivo, conteudo, (err) => {
+    if (err) {
+      console.error('Erro ao criar o arquivo ou escrever nele:', err);
+    } else {
+      console.log('Arquivo criado e conteúdo escrito com sucesso!');
+    }
+  });
+}
 
 async function search_eventCron() {
   await axios.get('https://webhook.site/3abc192f-c0a6-40f9-bb3e-3f017251bc2d');
+
   try {
     const [event] = await database.query(
       `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
@@ -31,5 +47,5 @@ async function search_eventCron() {
     process.exit(1);
   }
 }
-
-search_eventCron();
+teste();
+// search_eventCron();
