@@ -6,21 +6,28 @@ require('dotenv').config();
 
 // const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
 // const PORT = process.env.PORT;
-
-
-
 function teste() {
-const conteudo = 'Ok';
-const caminhoArquivo = './cronfig/';
+  const conteudo = 'Ok';
+  const caminhoDiretorio = './cronfig';
+  const caminhoArquivo = `${caminhoDiretorio}/arquivo.txt`;
 
-fs.writeFile(caminhoArquivo, conteudo, (err) => {
+  fs.mkdir(caminhoDiretorio, { recursive: true }, (err) => {
     if (err) {
-      console.error('Erro ao criar o arquivo ou escrever nele:', err);
+      console.error('Erro ao criar o diretório:', err);
     } else {
-      console.log('Arquivo criado e conteúdo escrito com sucesso!');
+      fs.writeFile(caminhoArquivo, conteudo, (err) => {
+        if (err) {
+          console.error('Erro ao criar o arquivo ou escrever nele:', err);
+        } else {
+          console.log('Arquivo criado e conteúdo escrito com sucesso!');
+        }
+      });
     }
   });
 }
+
+teste();
+
 
 async function search_eventCron() {
   await axios.get('https://webhook.site/3abc192f-c0a6-40f9-bb3e-3f017251bc2d');
