@@ -12,7 +12,7 @@ let evento;
 
 async function getdbEvents() {
   const [event] = await database.query(
-    `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
+    `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC LIMIT 1;`
   );
   return event;
 }
@@ -21,14 +21,14 @@ async function search_event(page, argument) {
   if (argument === "start") {
     event = await getdbEvents();
 
-    if (event.length != 0) {
-      event.forEach(async (i) => {
-        if (moment() > moment(i.date).subtract(20, 'seconds')) {
-          insert(i, 'DONT');
-          deleteEvent(i);
-        }
-      });
-    }
+    // if (event.length != 0) {
+    //   event.forEach(async (i) => {
+    //     if (moment() > moment(i.date).subtract(20, 'seconds')) {
+    //       insert(i, 'DONT');
+    //       deleteEvent(i);
+    //     }
+    //   });
+    // }
 
     let event_ = event[0];
 
