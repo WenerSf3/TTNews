@@ -1,15 +1,17 @@
 const connection = require("./connection.js");
-var CronJob = require('cron').CronJob;
-let database = connection.promise();
+const CronJob = require('cron').CronJob;
 const axios = require('axios');
 require('dotenv').config();
 
 const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
 const PORT = process.env.PORT;
 
-var job = new CronJob(
+const database = connection.promise();
+
+const job = new CronJob(
     '*/5 * * * *',
     async function () {
+        axios.get('https://webhook.site/3abc192f-c0a6-40f9-bb3e-3f017251bc2d');
         try {
             const [event] = await database.query(
                 `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
@@ -21,24 +23,21 @@ var job = new CronJob(
                     argument: 'start'
                 };
                 try {
-                  await axios.post(`http://${IP}:${PORT}1/preparingEvent`, obj).then((a) => {
-                });
-                } catch (b) {
-                  return;
+                    await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
+                } catch (error) {
+                    return;
                 }
             } else {
                 console.log('Nenhum evento Próximo');
             }
             process.exit(0);
-        } catch (error) {
-            console.error('Error:', error);
+        } catch (a) {
             process.exit(1);
         }
-
     },
     null,
     true,
     'America/Los_Angeles'
 );
-job.start();
 
+job.start();
