@@ -21,7 +21,7 @@ var job = new CronJob(
                     argument: 'start'
                 };
                 try {
-                  await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj).then((a) => {
+                  await axios.post(`http://${IP}:${PORT}1/preparingEvent`, obj).then((a) => {
                 });
                 } catch (b) {
                   return;
