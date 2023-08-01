@@ -1,6 +1,7 @@
 const { getActive } = require("./actives");
 const { insert, deleteEvent } = require("./database");
 const moment = require("moment");
+const axios = require('axios');
 
 async function startEvent(evento, web) {
   hourEvent = moment(
@@ -52,20 +53,14 @@ async function startEvent(evento, web) {
   console.clear()
   console.log('Evento Concluido!!');
 }
-async function resetSteps(web) {
-  await web.click(".deal-list__tab > svg.icon-deal-list-orders");
-  await trade.waitForTimeout(500);
+async function resetSteps() {
   try {
-    web.click(".order__button");
+    await axios.post(`http://154.56.41.121:81/closePendent`);
+    await axios.post(`http://154.56.41.121:81/closePendent`);
   } catch (error) {
-    console.log('nao a nada a clicar')
+    return;
   }
-  try {
-    await web.click(".order__button");
-  } catch (error) {
-    console.clear();
-  }
-  await web.click(".deal-list__tab > svg.icon-deal-list-trades");
+  return;
 }
 
 exports.startEvent = startEvent;

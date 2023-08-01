@@ -313,9 +313,13 @@ app.post('/closePendent', async (req, res) => {
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  await page.click(".deal-list__tab > svg.icon-deal-list-orders");
-  await page.click(".order__button"); 
-  await page.click(".deal-list__tab > svg.icon-deal-list-trades");
+  try {
+    await page.click(".deal-list__tab > svg.icon-deal-list-orders");
+    await page.click(".order__button"); 
+    await page.click(".deal-list__tab > svg.icon-deal-list-trades");
+  } catch (error) {
+    return;
+  }
 
   res.send('fechado com sucesso!');
 
