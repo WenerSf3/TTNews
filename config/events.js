@@ -23,7 +23,7 @@ async function search_event(page, argument) {
 
     if (event.length != 0) {
       event.forEach(async (i) => {
-        if (moment(i.date).subtract(20, 'seconds') < moment()) {
+        if (moment() < moment(i.date).add(20, 'seconds')) {
           insert(i, 'DONT');
           deleteEvent(i);
         }
