@@ -2,6 +2,7 @@ const moment = require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
 const { insert, deleteEvent } = require("./database");
+const axios = require('axios');
 let database = connection.promise();
 
 let now_hour;
@@ -36,6 +37,10 @@ async function search_event(page, argument) {
       now_hour = moment().add(5, "minutes").format("YYYY-MM-DD HH:mm:ss");
 
       if (now_hour > eventTime) {
+        let obj = {
+          ativo: event_.cambio,
+        };
+        await axios.post(`http://154.56.41.121:81/AlterCambio`, obj);
         startEvent(event_, page);
       } else {
         return console.log('evento nao encontrado por perto!');
