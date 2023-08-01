@@ -26,6 +26,32 @@ async function deleteEvent(event) {
       console.error('Erro ao excluir registro:', error);
     }
   }
+
+  async function enableEvents() {
+    try {
+      const [rows, fields] = await database.execute(
+        `UPDATE users SET search = '1' WHERE id = 1;`
+      );
+  
+      console.log('Registro atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar registro:', error);
+    }
+  }
+
+  async function disableEvents() {
+    try {
+      const [rows, fields] = await database.execute(
+        `UPDATE users SET search = '0' WHERE id = 1;`
+      );
+  
+      console.log('Registro atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar registro:', error);
+    }
+  }
   
 exports.insert = insert;
 exports.deleteEvent = deleteEvent;
+exports.enableEvents = enableEvents;
+exports.disableEvents = disableEvents;

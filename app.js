@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const { search_event } = require('./config/events.js')
+const { enableEvents, disableEvents } = require('./config/events.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -55,6 +56,28 @@ app.post('/preparingEvent', (req, res) => {
   }
   search_event(page, 'start');
   return res.send('Ok!');
+
+});
+
+app.post('/startprocess', (req, res) => {
+  const request = req.body;
+  if (status == false) {
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+  }
+  if (!page) {
+    return res.status(200).json({ msg: 'ja esta fechado' });
+  }
+  if (request.argument == 'start') {
+    enableEvents();
+    return res.status(200).json({ success: true, message: 'Ligado com sucesso' });
+
+  }
+  if (request.argument == 'stop') {
+    disableEvents();
+    return res.status(200).json({ success: true, message: 'desligado com sucesso' });
+
+  }
+  return res.status(404).json({ success: false, message: 'Erro no TTN' });
 
 });
 
