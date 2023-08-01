@@ -8,7 +8,7 @@ const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
 const PORT = process.env.PORT;
 
 var job = new CronJob(
-    '* * * * * *',
+    '*/5 * * * * *',
     async function () {
         await axios.get('https://webhook.site/3abc192f-c0a6-40f9-bb3e-3f017251bc2d');
         try {
