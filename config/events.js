@@ -40,7 +40,7 @@ async function search_event(page, argument) {
     let eventsPendents = [];
     if (event.length != 0) {
       event.forEach((i) => {
-        const currentTime = moment();
+        const currentTime = moment().subtract(3, 'hours');
         const targetTime = moment(i.date).subtract(10, 'seconds');
 
         if (currentTime.isAfter(targetTime)) {
@@ -52,14 +52,14 @@ async function search_event(page, argument) {
       });
       console.log('eventsPendents', eventsPendents)
 
-      const timeNow = moment();
+      const timeNow = moment().subtract(3, 'hours');
       const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
       let content;
       content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
 
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(eventsPendents[0].date).format("YYYY-MM-DD HH:mm:ss");
-        now_hour = moment().add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
+        now_hour = moment().subtract(3, 'hours').add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
         if (now_hour > eventTime) {
           AlterCambio(page, eventsPendents[0].cambio);
           startEvent(eventsPendents[0], page);
