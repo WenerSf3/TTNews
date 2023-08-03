@@ -55,7 +55,7 @@ async function search_event(page, argument) {
       const timeNow = moment();
       const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
       let content;
-      content = `Não encontrado! -> ${moment().format("YYYY-MM-DD HH:mm")}`;
+      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
 
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(eventsPendents[0].date).format("YYYY-MM-DD HH:mm:ss");
@@ -63,7 +63,7 @@ async function search_event(page, argument) {
         if (now_hour > eventTime) {
           AlterCambio(page, eventsPendents[0].cambio);
           startEvent(eventsPendents[0], page);
-          content = `Encontrado! -> ${moment().format("YYYY-MM-DD HH:mm")}`;
+          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
         } 
       }
       fs.appendFile('./log.txt', content + '\n', (err) => {
