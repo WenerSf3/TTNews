@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
       if(!browser){
         browser = await playwright.firefox.launch({ headless: true });
       }else{
-        return res.status(404).json({ success: true, message: 'jà esta logado!' });
+        return res.status(200).json({ success: true, message: 'jà esta logado!' });
 
       }
       if (browser) {
