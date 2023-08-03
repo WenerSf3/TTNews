@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const { search_event } = require('./config/events.js')
-const { enableEvents, disableEvents } = require('./config/events.js')
+const { enableEvents, disableEvents } = require('./config/database.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
       browser = await playwright.firefox.launch({ headless: true });
       if (browser) {
         status = true;
-        return res.status(200).json({ success: true, message: 'Logado!' });
+        return res.status(200).json({ success: true, message: 'Logado!', user:account });
       }
       return res.status(404).json({ success: false, message: 'Erro no TTN' });
     }
@@ -164,6 +164,7 @@ app.post('/TTNstart', async (req, res) => {
   }
 
 });
+
 
 app.post('/VerifyCode', async (req, res) => {
   const obj = req.body;
@@ -235,6 +236,8 @@ app.post('/TTNclose', (req, res) => {
   return res.status(200).json({ msg: 'TTN foi fechado com sucesso' });
 
 });
+
+
 
 app.post('/logout', (req, res) => {
   if (status == false) {
