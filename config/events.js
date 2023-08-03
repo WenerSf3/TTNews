@@ -67,14 +67,12 @@ async function search_event(page, argument) {
           eventsPendents.push(closestEvent);
         }
       }
-      console.log('Objeto mais próximo:', closestEvent);
-      return;
-      let NowEvent = eventsPendents.reverse()[0];
+      let NowEvent = closestEvent;
       const timeNow = moment().subtract(3, 'hours');
       const timeEvent = moment().subtract(10, 'seconds');
       let content;
       console.log('event', NowEvent);
-      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")} ,${NowEvent.date}`;
+      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
 
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
