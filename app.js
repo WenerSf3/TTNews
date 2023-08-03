@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
       browser = await playwright.firefox.launch({ headless: true });
       if (browser) {
         status = true;
-        return res.status(200).json({ success: true, message: 'Logado!', user:account });
+        return res.status(200).json({ success: true, message: 'Logado!', user:account[0] });
       }
       return res.status(404).json({ success: false, message: 'Erro no TTN' });
     }
