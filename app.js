@@ -101,10 +101,11 @@ app.post('/login', async (req, res) => {
         status = true;
         return res.status(200).json({ success: true, message: 'Logado!', user:account[0] });
       }
-      return res.status(404).json({ success: false, message: 'Erro no TTN' });
+      return res.status(200).json({ success: false, message: 'Erro no TTN',user:account[0] });
     }
 
-    return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    return res.status(200).json({ success: false, message: 'Usuário não encontrado',user:account[0] });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: 'Erro no servidor' });
