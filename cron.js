@@ -20,6 +20,7 @@ var job = new CronJob(
                     argument: 'start'
                 };
                 await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
+                await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
             } else {
                 console.log('Desabilitado');
             }

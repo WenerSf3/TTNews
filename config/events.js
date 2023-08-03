@@ -2,13 +2,11 @@ const moment = require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
 const { insert, deleteEvent } = require("./database");
-const axios = require('axios');
+const fs = require('fs');
 let database = connection.promise();
 
 let now_hour;
-let buscaInterval;
 let event;
-let evento;
 
 async function getdbEvents() {
   const [event] = await database.query(
@@ -16,7 +14,7 @@ async function getdbEvents() {
   );
   return event;
 }
-async function AlterCambio(page,ativo ){
+async function AlterCambio(page, ativo) {
   try {
     await page.click(".asset-select__button", { timeout: 1000 });
   } catch (e) {
@@ -48,29 +46,29 @@ async function search_event(page, argument) {
         if (currentTime.isAfter(targetTime)) {
           insert(i, 'DONT');
           deleteEvent(i);
-        }else{
+        } else {
           eventsPendents.push(i);
         }
       });
-      console.log('eventsPendents',eventsPendents)
-      
+      console.log('eventsPendents', eventsPendents)
+
       const timeNow = moment();
       const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
+      let content;
+      content = `Não encontrado! -> ${moment().format("YYYY-MM-DD HH:mm")}`;
 
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(eventsPendents[0].date).format("YYYY-MM-DD HH:mm:ss");
         now_hour = moment().add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
-        console.log('entrei na validação')
-
         if (now_hour > eventTime) {
-          AlterCambio(page,eventsPendents[0].cambio);
-          console.log('encontrei')
+          AlterCambio(page, eventsPendents[0].cambio);
           startEvent(eventsPendents[0], page);
-        } else {
-          console.log('Não encontrei')
-          return console.log('evento nao encontrado por perto!');
-        }
+          content = `Encontrado! -> ${moment().format("YYYY-MM-DD HH:mm")}`;
+        } 
       }
+      fs.appendFile('./log.txt', content + '\n', (err) => {
+        return;
+      });
     }
   }
 }

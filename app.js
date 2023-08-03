@@ -324,6 +324,21 @@ app.post('/AlterCambio', async (req, res) => {
   return res.status(200).json({ success: true, message: 'Ativo trocado com sucesso!' });
 });
 
+app.post('/antiLogout', async (req, res) => {
+
+  if (status == false) {
+    return;
+  }
+  try {
+    await page.click(".deal-list__tab > svg.icon-deal-list-orders");
+    await page.waitForTimeout(1000);
+    await page.click(".deal-list__tab > svg.icon-deal-list-trades");
+  } catch (error) {
+    return;
+  }
+
+
+});
 app.post('/closePendent', async (req, res) => {
 
   if (status == false) {
