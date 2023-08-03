@@ -10,7 +10,7 @@ let event;
 
 async function getdbEvents() {
   const [event] = await database.query(
-    `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC LIMIT 1;`
+    `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
   );
   return event;
 }
