@@ -50,11 +50,11 @@ async function search_event(page, argument) {
           eventsPendents.push(i);
         }
       });
-      eventsPendents = eventsPendents.reverse();
+      let NowEvent = eventsPendents.reverse()[0].date;
       const timeNow = moment().subtract(3, 'hours');
-      const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
+      const timeEvent = moment().subtract(10, 'seconds');
       let content;
-      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
+      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")} ,${NowEvent}`;
 
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(eventsPendents[0].date).format("YYYY-MM-DD HH:mm:ss");
