@@ -73,7 +73,7 @@ async function search_event(page, argument) {
       let content;
       content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
 
-      if (eventsPendents && timeNow.isBefore(timeEvent)) {
+      if (NowEvent && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
         now_hour = moment().subtract(3, 'hours').add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
         if (now_hour > eventTime) {
