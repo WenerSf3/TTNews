@@ -53,9 +53,6 @@ async function search_event(page, argument) {
       
       const timeNow = moment().subtract(3, 'hours');
       const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
-      console.log('eventsPendents',timeNow, timeEvent);
-      return;
-
       let content;
       content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")} , -> ${timeNow,',', timeEvent}`;
 
