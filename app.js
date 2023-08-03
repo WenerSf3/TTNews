@@ -150,8 +150,6 @@ app.post('/TTNstart', async (req, res) => {
 
       return res.status(200).json(verify);
     } catch (error) {
-      console.log('erro no login', error);
-
       let verify = {
         msg: 'SIM Automação concluída com sucesso!',
         success: true
@@ -194,7 +192,11 @@ app.post('/VerifyCode', async (req, res) => {
     }
 
     if (i > 5) {
-      return res.status(404).json('codigo incorreto');
+      try {
+        return res.status(404).json('codigo incorreto');
+      } catch (error) {
+        return;
+      }
     }
 
   }, 1500);
@@ -295,19 +297,33 @@ app.post('/Put', async (req, res) => {
 
 app.post('/AlterCambio', async (req, res) => {
   const obj = req.body;
-
-  if (status == false) {
+  console.log('trocando ativo')
+  if (!status) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  await page.locator(".asset-select__button").click();
-  await page.waitForTimeout(1000);
-  await page.locator(".asset-select__search-input").fill(String(obj.ativo));
-  await page.waitForTimeout(1000);
-  await page.locator(".assets-table__name").click();
 
-  res.send('Ativo trocado com sucesso!');
+  try {
+    await page.click(".asset-select__button", { timeout: 1000 });
+  } catch (e) {
+  }
 
+  await page.waitForTimeout(500);
+
+  try {
+    await page.locator(".asset-select__search-input", { timeout: 1000 }).fill(String(obj.ativo));
+  } catch (e) {
+  }
+
+  await page.waitForTimeout(500);
+
+  try {
+    await page.click(".assets-table__name", { timeout: 1000 });
+  } catch (e) {
+  }
+
+  return res.status(200).json({ success: true, message: 'Ativo trocado com sucesso!' });
 });
+
 app.post('/closePendent', async (req, res) => {
 
   if (status == false) {
@@ -315,12 +331,13 @@ app.post('/closePendent', async (req, res) => {
   }
   try {
     await page.click(".deal-list__tab > svg.icon-deal-list-orders");
-    await page.click(".order__button"); 
+    await page.click(".order__button",{ timeout: 2000 }); 
     await page.click(".deal-list__tab > svg.icon-deal-list-trades");
+    return res.send('fechado com sucesso!');
   } catch (error) {
-    return;
+    await page.click(".deal-list__tab > svg.icon-deal-list-trades");
+    return res.send('fechado com sucesso!');
   }
 
-  res.send('fechado com sucesso!');
 
 });

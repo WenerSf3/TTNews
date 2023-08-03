@@ -24,7 +24,7 @@ async function startEvent(evento, web) {
   let time = setInterval(async () => {
     horarioMoment = horarioMoment.add(1, "second");
     missing = hourEvent.diff(horarioMoment, "seconds");
-    if (missing <= 9 && !started) {
+    if (missing <= 11 && !started) {
       started = true;
       global.price = await getActive(evento.cambio);
       clearInterval(time);
@@ -45,13 +45,14 @@ async function startEvent(evento, web) {
       }, 11000);
       insert(evento, 'WIN');
       deleteEvent(evento);
+      console.log('Evento Concluido!!');
+
     } else {
       console.clear()
       console.log('Aguardando horario!');
     }
   }, 1000);
   console.clear()
-  console.log('Evento Concluido!!');
 }
 async function resetSteps() {
   try {

@@ -10,23 +10,22 @@ const PORT = process.env.PORT;
 var job = new CronJob(
     '*/5 * * * *',
     async function () {
-        await axios.get('https://webhook.site/3abc192f-c0a6-40f9-bb3e-3f017251bc2d');
         try {
             const [event] = await database.query(
                 `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
             );
             const [account] = await database.query(`SELECT * FROM Users LIMIT 1;`);
-                console.log(`http://${IP}:${PORT}/preparingEvent`)
-            if (event.length > 0 && account.search !== '0') {
+            if (event.length > 0 && account[0].search !== '0') {
                 let obj = {
                     argument: 'start'
                 };
                 await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
             } else {
-                console.log('Nenhum evento Próximo');
+                console.log('Desabilitado');
             }
             process.exit(0);
         } catch (a) {
+            console.log('erro')
             process.exit(1);
         }
     },

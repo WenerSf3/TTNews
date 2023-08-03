@@ -16,37 +16,62 @@ async function getdbEvents() {
   );
   return event;
 }
+async function AlterCambio(page,ativo ){
+  try {
+    await page.click(".asset-select__button", { timeout: 1000 });
+  } catch (e) {
+  }
 
+  await page.waitForTimeout(500);
+
+  try {
+    await page.locator(".asset-select__search-input", { timeout: 1000 }).fill(String(ativo));
+  } catch (e) {
+  }
+
+  await page.waitForTimeout(500);
+
+  try {
+    await page.click(".assets-table__name", { timeout: 1000 });
+  } catch (e) {
+  }
+}
 async function search_event(page, argument) {
   if (argument === "start") {
     event = await getdbEvents();
+    let eventsPendents = [];
+    if (event.length != 0) {
+      event.forEach((i) => {
+        const currentTime = moment();
+        const targetTime = moment(i.date).subtract(10, 'seconds');
 
-    // if (event.length != 0) {
-    //   event.forEach(async (i) => {
-    //     if (moment() > moment(i.date).subtract(20, 'seconds')) {
-    //       insert(i, 'DONT');
-    //       deleteEvent(i);
-    //     }
-    //   });
-    // }
+        if (currentTime.isAfter(targetTime)) {
+          insert(i, 'DONT');
+          deleteEvent(i);
+        }else{
+          eventsPendents.push(i);
+        }
+      });
+      console.log('eventsPendents',eventsPendents)
+      
+      const timeNow = moment();
+      const timeEvent = moment(eventsPendents[0].date).subtract(10, 'seconds');
 
-    let event_ = event[0];
+      if (eventsPendents && timeNow.isBefore(timeEvent)) {
+        const eventTime = moment(eventsPendents[0].date).format("YYYY-MM-DD HH:mm:ss");
+        now_hour = moment().add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
+        console.log('entrei na validação')
 
-    if (event_) {
-      const eventTime = moment(event_.date).format("YYYY-MM-DD HH:mm:ss");
-      now_hour = moment().add(5, "minutes").format("YYYY-MM-DD HH:mm:ss");
-
-      if (now_hour > eventTime) {
-        let obj = {
-          ativo: event_.cambio,
-        };
-        await axios.post(`http://154.56.41.121:81/AlterCambio`, obj);
-        startEvent(event_, page);
-      } else {
-        return console.log('evento nao encontrado por perto!');
+        if (now_hour > eventTime) {
+          AlterCambio(page,eventsPendents[0].cambio);
+          console.log('encontrei')
+          startEvent(eventsPendents[0], page);
+        } else {
+          console.log('Não encontrei')
+          return console.log('evento nao encontrado por perto!');
+        }
       }
     }
   }
 }
-
 exports.search_event = search_event;
