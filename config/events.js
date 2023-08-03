@@ -56,15 +56,15 @@ async function search_event(page, argument) {
       let content;
       console.log('event',NowEvent);
       content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")} ,${NowEvent.date}`;
-
+      
       if (eventsPendents && timeNow.isBefore(timeEvent)) {
         const eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
         now_hour = moment().subtract(3, 'hours').add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
-        if (now_hour > eventTime) {
-          AlterCambio(page, NowEvent.cambio);
-          startEvent(NowEvent, page);
-          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
-        } 
+        // if (now_hour > eventTime) {
+        //   AlterCambio(page, NowEvent.cambio);
+        //   startEvent(NowEvent, page);
+        //   content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
+        // } 
       }
       fs.appendFile('./log.txt', content + '\n', (err) => {
         return;
