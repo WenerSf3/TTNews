@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const { search_event } = require('./config/events.js')
-const { enableEvents, disableEvents } = require('./config/database.js')
+const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent } = require('./config/database.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -58,24 +58,37 @@ app.post('/preparingEvent', (req, res) => {
   return res.send('Ok!');
 
 });
+app.get('/checkBtn', async (req, res) => {
 
-app.post('/startprocess', (req, res) => {
+  const [account] = await database.query(
+    'SELECT * FROM Users LIMIT 1;');
+
+  return res.status(200).json({ success: true, status: account[0].search });
+});
+
+app.post('/startprocess', async (req, res) => {
   const request = req.body;
+
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
   if (!page) {
     return res.status(200).json({ msg: 'ja esta fechado' });
   }
+
   if (request.argument == 'start') {
-    enableEvents();
-    return res.status(200).json({ success: true, message: 'Ligado com sucesso' });
+    await enableEvents();
+    const [account] = await database.query(
+      'SELECT * FROM Users LIMIT 1;');
+
+    return res.status(200).json({ success: true, message: 'Ligado com sucesso', statuss: account[0].search });
 
   }
   if (request.argument == 'stop') {
-    disableEvents();
-    return res.status(200).json({ success: true, message: 'desligado com sucesso' });
-
+    await disableEvents();
+    const [account] = await database.query(
+      'SELECT * FROM Users');
+    return res.status(200).json({ success: true, message: 'Ligado com sucesso', statuss: account[0].search });
   }
   return res.status(404).json({ success: false, message: 'Erro no TTN' });
 
@@ -91,20 +104,21 @@ app.post('/login', async (req, res) => {
     );
 
     if (account.length !== 0) {
-      if(!browser){
+      if (!browser) {
         browser = await playwright.firefox.launch({ headless: true });
-      }else{
-        return res.status(200).json({ success: true, message: 'jà esta logado!' });
+        status = true;
+      } else {
+        status = true;
+        if (page) {
+          return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'started' });
+        }
+        return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'notstarted' });
 
       }
-      if (browser) {
-        status = true;
-        return res.status(200).json({ success: true, message: 'Logado!', user:account[0] });
-      }
-      return res.status(200).json({ success: false, message: 'Erro no TTN',user:account[0] });
+      return res.status(500).json({ success: false, message: 'Erro no TTN', user: account[0] });
     }
 
-    return res.status(200).json({ success: false, message: 'Usuário não encontrado',user:account[0] });
+    return res.status(404).json({ success: false, message: 'Usuário não encontrado', user: account[0] });
 
   } catch (error) {
     console.error(error);
@@ -239,6 +253,7 @@ app.post('/TTNclose', (req, res) => {
     return res.status(200).json({ msg: 'TTN stá fechado' });
   }
   page.close();
+  page = null;
   return res.status(200).json({ msg: 'TTN foi fechado com sucesso' });
 
 });
@@ -252,6 +267,8 @@ app.post('/logout', (req, res) => {
     }
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
+  page.close();
+  page = null;
   browser.close();
   status = false;
 
@@ -265,6 +282,19 @@ app.post('/Call', async (req, res) => {
   await page.locator(".button.button--success.button--spaced.call-btn.section-deal__button").click();
 
   res.send('compra executada');
+
+});
+
+app.post('/editEvent', async (req, res) => {
+  return res.status(200).json({ Ttn: false, message: 'editado com sucesso!' });
+
+});
+app.post('/deleteEvent', async (req, res) => {
+  const request = req.body;
+  const [evento]  = await database.execute(
+    `DELETE FROM Eventos WHERE id = ${request.id};`
+  );
+  return res.status(200).json({ Ttn: false, message: 'deletado com sucesso!',event :evento });
 
 });
 
@@ -348,6 +378,23 @@ app.post('/antiLogout', async (req, res) => {
 
 
 });
+
+app.get('/getEvents', async (req, res) => {
+
+  if (status == false) {
+    return;
+  } else {
+    try {
+      const [eventos] = await database.execute(`SELECT * FROM Eventos;`);
+      return res.status(200).json({ success: true , list:eventos });    
+    } catch (error) {
+      return res.status(404).json({ erro: error });
+    }
+
+  }
+
+});
+
 app.post('/closePendent', async (req, res) => {
 
   if (status == false) {
@@ -355,7 +402,7 @@ app.post('/closePendent', async (req, res) => {
   }
   try {
     await page.click(".deal-list__tab > svg.icon-deal-list-orders");
-    await page.click(".order__button",{ timeout: 2000 }); 
+    await page.click(".order__button", { timeout: 2000 });
     await page.click(".deal-list__tab > svg.icon-deal-list-trades");
     return res.send('fechado com sucesso!');
   } catch (error) {
