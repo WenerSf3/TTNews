@@ -6,12 +6,18 @@ async function insert(evento, status) {
   try {
     const [rows, fields] = await database.execute(
       `INSERT INTO Historico (evento, cambio, horario, pavil, resultado) VALUES (?, ?, ?, ?, ?);`,
-      [evento.event_name, evento.cambio, `${moment(evento.date).format('YYYY-MM-DD HH:mm:ss')}`, `${evento.pavil}`, `${status}`]
+      [
+        evento.event_name,
+        evento.cambio,
+        `${moment(evento.date).format("YYYY-MM-DD HH:mm:ss")}`,
+        `${evento.pavil}`,
+        `${status}`,
+      ]
     );
 
-    console.log('Registro inserido com sucesso!');
+    console.log("Registro inserido com sucesso!");
   } catch (error) {
-    console.error('Erro ao inserir registro:', error);
+    console.error("Erro ao inserir registro:", error);
   }
 }
 
@@ -21,9 +27,30 @@ async function deleteEvent(event) {
       `DELETE FROM Eventos WHERE id = ${event.id};`
     );
 
-    console.log('Registro excluído com sucesso!');
+    console.log("Registro excluído com sucesso!");
   } catch (error) {
-    console.error('Erro ao excluir registro:', error);
+    console.error("Erro ao excluir registro:", error);
+  }
+}
+
+async function createNewEvent(data) {
+  try {
+    let newEvent = await database.execute(
+      `INSERT INTO Eventos (nivel, event_name, cambio, posicao, pavil, valor, date)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        data.nivel,
+        data.event_name,
+        data.cambio,
+        data.posicao,
+        data.pavil.toString(),
+        10,
+        data.date,
+      ]
+    );
+    return newEvent;
+  } catch (error) {
+    console.log("error", error);
   }
 }
 
@@ -34,7 +61,7 @@ async function enableEvents() {
     );
     return OK;
   } catch (error) {
-    console.error('Erro ao atualizar registro:', error);
+    console.error("Erro ao atualizar registro:", error);
   }
 }
 
@@ -44,9 +71,9 @@ async function disableEvents() {
       `UPDATE Users SET search = '0' WHERE id = 1;`
     );
 
-    console.log('Registro atualizado com sucesso!');
+    console.log("Registro atualizado com sucesso!");
   } catch (error) {
-    console.error('Erro ao atualizar registro:', error);
+    console.error("Erro ao atualizar registro:", error);
   }
 }
 
@@ -57,7 +84,7 @@ async function enableEvents() {
     );
     return OK;
   } catch (error) {
-    console.error('Erro ao atualizar registro:', error);
+    console.error("Erro ao atualizar registro:", error);
   }
 }
 
@@ -67,9 +94,9 @@ async function getStatus() {
       `UPDATE Users SET search = '0' WHERE id = 1;`
     );
 
-    console.log('Registro atualizado com sucesso!');
+    console.log("Registro atualizado com sucesso!");
   } catch (error) {
-    console.error('Erro ao atualizar registro:', error);
+    console.error("Erro ao atualizar registro:", error);
   }
 }
 
@@ -78,3 +105,4 @@ exports.deleteEvent = deleteEvent;
 exports.enableEvents = enableEvents;
 exports.disableEvents = disableEvents;
 exports.getStatus = getStatus;
+exports.createNewEvent = createNewEvent;

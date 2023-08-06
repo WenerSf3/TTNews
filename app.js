@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const { search_event } = require('./config/events.js')
-const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent } = require('./config/database.js')
+const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent  , createNewEvent} = require('./config/database.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -97,7 +97,7 @@ app.post('/startprocess', async (req, res) => {
 app.post('/login', async (req, res) => {
   const request = req.body;
 
-  try {
+  // try {
     const [account] = await database.query(
       'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
       [request.email, request.password, request.key]
@@ -120,10 +120,10 @@ app.post('/login', async (req, res) => {
 
     return res.status(404).json({ success: false, message: 'Usuário não encontrado', user: account[0] });
 
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, message: 'Erro no servidor' });
-  }
+  // } catch (error) {
+  //   console.error(error);
+  //   return res.status(500).json({ success: false, message: 'Erro no servidor' });
+  // }
 });
 
 app.post('/TTNstart', async (req, res) => {
@@ -185,6 +185,22 @@ app.post('/TTNstart', async (req, res) => {
 
 });
 
+
+
+app.post('/createEvent', async (req, res) => {
+  const request = req.body;
+
+  if (status == false) {
+    return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
+  }
+  
+  let created = createNewEvent(request);
+  if(created){
+  return res.status(200).json({ success:true , msg: 'criado com sucesso!' });
+    
+  }
+  return res.status(404).json({ success:false ,msg: 'erro!' });
+});
 
 app.post('/VerifyCode', async (req, res) => {
   const obj = req.body;
