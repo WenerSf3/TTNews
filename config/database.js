@@ -54,6 +54,28 @@ async function createNewEvent(data) {
   }
 }
 
+async function EditEvent(data) {
+  try {
+    let updatedEvent = await database.execute(
+      `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
+      [
+        data.nivel,
+        data.event_name,
+        data.cambio,
+        data.posicao,
+        data.pavil.toString(),
+        10,
+        data.date,
+        data.id
+      ]
+    );
+    return updatedEvent;
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
+
 async function enableEvents() {
   try {
     let OK = await database.execute(
@@ -105,4 +127,5 @@ exports.deleteEvent = deleteEvent;
 exports.enableEvents = enableEvents;
 exports.disableEvents = disableEvents;
 exports.getStatus = getStatus;
+exports.EditEvent = EditEvent;
 exports.createNewEvent = createNewEvent;

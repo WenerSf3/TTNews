@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const { search_event } = require('./config/events.js')
-const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent  , createNewEvent} = require('./config/database.js')
+const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent, createNewEvent, EditEvent } = require('./config/database.js')
 
 const connection = mysql.createConnection({
   host: 'db4free.net',
@@ -98,27 +98,27 @@ app.post('/login', async (req, res) => {
   const request = req.body;
 
   // try {
-    const [account] = await database.query(
-      'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
-      [request.email, request.password, request.key]
-    );
+  const [account] = await database.query(
+    'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
+    [request.email, request.password, request.key]
+  );
 
-    if (account.length !== 0) {
-      if (!browser) {
-        browser = await playwright.firefox.launch({ headless: true });
-        status = true;
-      } else {
-        status = true;
-        if (page) {
-          return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'started' });
-        }
-        return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'notstarted' });
-
+  if (account.length !== 0) {
+    if (!browser) {
+      browser = await playwright.firefox.launch({ headless: true });
+      status = true;
+    } else {
+      status = true;
+      if (page) {
+        return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'started' });
       }
-      return res.status(500).json({ success: false, message: 'Erro no TTN', user: account[0] });
-    }
+      return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'notstarted' });
 
-    return res.status(404).json({ success: false, message: 'Usuário não encontrado', user: account[0] });
+    }
+    return res.status(500).json({ success: false, message: 'Erro no TTN', user: account[0] });
+  }
+
+  return res.status(404).json({ success: false, message: 'Usuário não encontrado', user: account[0] });
 
   // } catch (error) {
   //   console.error(error);
@@ -193,13 +193,13 @@ app.post('/createEvent', async (req, res) => {
   if (status == false) {
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  
+
   let created = createNewEvent(request);
-  if(created){
-  return res.status(200).json({ success:true , msg: 'criado com sucesso!' });
-    
+  if (created) {
+    return res.status(200).json({ success: true, msg: 'criado com sucesso!' });
+
   }
-  return res.status(404).json({ success:false ,msg: 'erro!' });
+  return res.status(404).json({ success: false, msg: 'erro!' });
 });
 
 app.post('/VerifyCode', async (req, res) => {
@@ -302,15 +302,33 @@ app.post('/Call', async (req, res) => {
 });
 
 app.post('/editEvent', async (req, res) => {
-  return res.status(200).json({ Ttn: false, message: 'editado com sucesso!' });
+
+  const request = req.body;
+
+
+
+    let [updatedEvent] = await database.execute(
+      `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
+      [
+        request.nivel,
+        request.event_name,
+        request.cambio,
+        request.posicao,
+        request.pavil.toString(),
+        10,
+        request.date,
+        request.id
+      ]
+    );
+    return res.status(200).json({ success: true, message: 'editado com sucesso!' , Event: updatedEvent});
 
 });
 app.post('/deleteEvent', async (req, res) => {
   const request = req.body;
-  const [evento]  = await database.execute(
+  const [evento] = await database.execute(
     `DELETE FROM Eventos WHERE id = ${request.id};`
   );
-  return res.status(200).json({ Ttn: false, message: 'deletado com sucesso!',event :evento });
+  return res.status(200).json({ Ttn: false, message: 'deletado com sucesso!', event: evento });
 
 });
 
@@ -402,7 +420,7 @@ app.get('/getEvents', async (req, res) => {
   } else {
     try {
       const [eventos] = await database.execute(`SELECT * FROM Eventos;`);
-      return res.status(200).json({ success: true , list:eventos });    
+      return res.status(200).json({ success: true, list: eventos });
     } catch (error) {
       return res.status(404).json({ erro: error });
     }
