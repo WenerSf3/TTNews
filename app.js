@@ -13,7 +13,14 @@ const connection = mysql.createConnection({
   database: 'ggxttn',
   port: 3306
 });
-require('dotenv').config();
+const fs = require('fs');
+const dotenv = require('dotenv');
+
+if (fs.existsSync('.env.development')) {
+  dotenv.config({ path: '.env.development' });
+} else {
+  dotenv.config();
+}
 
 let database = connection.promise();
 
@@ -24,7 +31,7 @@ let page;
 let status = false;
 
 const PORT = process.env.PORT;
-const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
+const IP = process.env.IP;
 
 app.listen(PORT, () => {
   console.log(`API rodando em http://${IP}:${PORT}`);
