@@ -16,7 +16,7 @@ const connection = mysql.createConnection({
 const fs = require('fs');
 const dotenv = require('dotenv');
 
-if (fs.existsSync('.env.development')) {
+if (fs.existsSync('dev.dev')) {
   dotenv.config({ path: '.env.development' });
 } else {
   dotenv.config();
