@@ -143,7 +143,6 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/TTNstart', async (req, res) => {
-  try {
     if (status == false || !browser) {
       return res.status(404).json({ error: 'esta deslogado' });
     }
@@ -193,11 +192,6 @@ app.post('/TTNstart', async (req, res) => {
 
       return res.status(200).json(verify);
     }
-
-  } catch (error) {
-    console.log('erro ao criar a página', error);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
-  }
 
 });
 
