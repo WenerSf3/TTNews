@@ -102,36 +102,45 @@ app.post('/startprocess', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const request = req.body;
+  try {
+    const request = req.body;
 
-  // try {
-  const [account] = await database.query(
-    'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
-    [request.email, request.password, request.key]
-  );
+    const [account] = await database.query(
+      'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
+      [request.email, request.password, request.key]
+    );
 
-  if (account.length !== 0) {
+    if (account.length === 0) {
+      return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    }
+
+    if (page) {
+      return res.status(200).json({
+        success: true,
+        message: 'Já está logado!',
+        user: account[0],
+        ttnstart: page ? 'started' : 'notstarted'
+      });
+    }
+
     if (!browser) {
       browser = await playwright.firefox.launch({ headless: true });
-      status = true;
-    } else {
-      status = true;
-      if (page) {
-        return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'started' });
-      }
-      return res.status(200).json({ success: true, message: 'jà esta logado!', user: account[0], ttnstart: 'notstarted' });
-
+      page = await browser.newPage();
     }
-    return res.status(500).json({ success: false, message: 'Erro no TTN', user: account[0] });
+
+    status = true;
+    return res.status(200).json({
+      success: true,
+      message: 'Login bem-sucedido!',
+      user: account[0], 
+      ttnstart: 'started'
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Erro no servidor' });
   }
-
-  return res.status(404).json({ success: false, message: 'Usuário não encontrado', user: account[0] });
-
-  // } catch (error) {
-  //   console.error(error);
-  //   return res.status(500).json({ success: false, message: 'Erro no servidor' });
-  // }
 });
+
 
 app.post('/TTNstart', async (req, res) => {
   try {
@@ -290,8 +299,6 @@ app.post('/logout', (req, res) => {
     }
     return res.status(404).json({ Ttn: false, message: 'TTN está fechado' });
   }
-  page.close();
-  page = null;
   browser.close();
   status = false;
 
