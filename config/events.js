@@ -70,7 +70,7 @@ async function search_event(page, argument) {
         }
       }
       let NowEvent = closestEvent;
-      const timeNow = moment();
+      const timeNow = moment().subtract(3,'hours');
       const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
       let content;
 
