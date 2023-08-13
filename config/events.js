@@ -70,14 +70,17 @@ async function search_event(page, argument) {
         }
       }
       let NowEvent = closestEvent;
-      const timeNow = moment().subtract(3, 'hours');
-      const timeEvent = moment().subtract(10, 'seconds');
+      const timeNow = moment();
+      const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
       let content;
-      content = `Não encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
 
-      if (NowEvent && timeNow.isBefore(timeEvent)) {
-        const eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
-        now_hour = moment().subtract(3, 'hours').add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
+      content = `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} | Proximo Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")}`;
+      console.log('time' , timeNow < timeEvent, timeNow , timeEvent)
+      if (NowEvent && timeNow < timeEvent) {
+        eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
+
+        now_hour = moment(timeNow).add(5, "minutes").add(20, 'seconds').format("YYYY-MM-DD HH:mm:ss");
+        console.log('now_hour' , now_hour > eventTime , now_hour , eventTime)
         if (now_hour > eventTime) {
           startEvent(NowEvent, page);
           content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;

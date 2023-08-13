@@ -114,12 +114,12 @@ app.post('/login', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
     }
 
-    if (page) {
+    if (page && page.url() == 'https://qxbroker.com/en/trade') {
       return res.status(200).json({
         success: true,
         message: 'Já está logado!',
         user: account[0],
-        ttnstart: page ? 'started' : 'notstarted'
+        ttnstart: 'started'
       });
     }
 
@@ -127,35 +127,36 @@ app.post('/login', async (req, res) => {
       browser = await playwright.firefox.launch({ headless: true });
       page = await browser.newPage();
     }
-
     status = true;
+
     return res.status(200).json({
       success: true,
       message: 'Login bem-sucedido!',
-      user: account[0], 
-      ttnstart: 'started'
+      user: account[0],
+      ttnstart: 'notstarted'
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: 'Erro no servidor' });
   }
 });
 
-
 app.post('/TTNstart', async (req, res) => {
-    if (status == false || !browser) {
-      return res.status(404).json({ error: 'esta deslogado' });
+  try {
+    if (status === false || !browser) {
+      return res.status(404).json({ error: 'está deslogado' });
     }
 
     if (page) {
-      browser.close();
-      browser = await playwright.firefox.launch({ headless: true });
-      page = await browser.newPage();
-    } else {
-      page = await browser.newPage();
+      await page.close();
     }
 
+    browser = await playwright.firefox.launch({ headless: true });
+    page = await browser.newPage();
+
     await page.goto('https://qxbroker.com/en/sign-in/');
+    await page.waitForLoadState('domcontentloaded');
     await page.getByRole('textbox', { name: 'Email' }).fill('tradewener@gmail.com');
     await page.getByRole('textbox', { name: 'Password' }).fill('wmgame9898');
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -163,19 +164,16 @@ app.post('/TTNstart', async (req, res) => {
     await new Promise(resolve => setTimeout(resolve, 2500));
     console.log('clicou em login');
 
-    try {
-      const element = await page.$('form > .modal-sign__input > .hint.-danger');
-      const elementText = await element.innerText();
+    await page.waitForTimeout(1000);
+    console.log('clicou em login');
 
-      if (elementText.trim().length > 0) {
-        return res.status(200).json({ msg: 'conta incorreta', success: 'fail_1' });
-      }
-    } catch (error) {
-      console.log('passou')
+    const errorElement = await page.$('form > .modal-sign__input > .hint.-danger');
+    if (errorElement) {
+      const elementText = await errorElement.innerText();
+      return res.status(200).json({ msg: 'conta incorreta', success: 'fail_1' });
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
       await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 2000 });
       console.log('fez login');
       let verify = {
@@ -192,8 +190,12 @@ app.post('/TTNstart', async (req, res) => {
 
       return res.status(200).json(verify);
     }
-
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Erro no servidor', success: false });
+  }
 });
+
 
 
 
@@ -315,20 +317,20 @@ app.post('/editEvent', async (req, res) => {
 
 
 
-    let [updatedEvent] = await database.execute(
-      `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
-      [
-        request.nivel,
-        request.event_name,
-        request.cambio,
-        request.posicao,
-        request.pavil.toString(),
-        10,
-        request.date,
-        request.id
-      ]
-    );
-    return res.status(200).json({ success: true, message: 'editado com sucesso!' , Event: updatedEvent});
+  let [updatedEvent] = await database.execute(
+    `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
+    [
+      request.nivel,
+      request.event_name,
+      request.cambio,
+      request.posicao,
+      request.pavil.toString(),
+      10,
+      request.date,
+      request.id
+    ]
+  );
+  return res.status(200).json({ success: true, message: 'editado com sucesso!', Event: updatedEvent });
 
 });
 app.post('/deleteEvent', async (req, res) => {

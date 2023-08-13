@@ -1,37 +1,51 @@
-var CronJob = require('cron').CronJob;
+const CronJob = require('cron').CronJob;
 const axios = require('axios');
 const connection = require("./config/connection");
-let database = connection.promise();
-require('dotenv').config();
+const fs = require('fs');
+const dotenv = require('dotenv');
 
-const IP = process.env.IP_LOCAL || process.env.IP_PRODUCT;
+let database = connection.promise();
+
+if (fs.existsSync('./dev.v')) {
+    dotenv.config({ path: '.env.development' });
+} else {
+    dotenv.config();
+}
+
+const IP = process.env.IP;
 const PORT = process.env.PORT;
 
-var job = new CronJob(
+const job = new CronJob(
     '*/5 * * * *',
     async function () {
         try {
             const [event] = await database.query(
                 `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
             );
+
             const [account] = await database.query(`SELECT * FROM Users LIMIT 1;`);
+
             if (event.length > 0 && account[0].search !== '0') {
-                let obj = {
+                const obj = {
                     argument: 'start'
                 };
+
                 await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
                 await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
+                return;
             } else {
                 console.log('Desabilitado');
+                return;
             }
-            process.exit(0);
-        } catch (a) {
-            console.log('erro')
-            process.exit(1);
+
+        } catch (error) {
+            console.error('Erro na solicitação Axios:', error.message);
+            return;
         }
     },
     null,
     true,
     'America/Los_Angeles'
 );
+
 job.start();
