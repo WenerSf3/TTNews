@@ -45,36 +45,36 @@ async function search_event(page, argument) {
       const currentTime = moment().subtract(3, 'hours');
 
       event.forEach((i) => {
-        const targetTime = moment(i.date).subtract(10, 'seconds');
-
+        const targetTime = moment(i.date).add(30, 'seconds');
+    
         const diffInMilliseconds = Math.abs(currentTime.diff(targetTime));
-
+    
         if (diffInMilliseconds < closestDiff) {
-          closestDiff = diffInMilliseconds;
-          closestEvent = i;
+            closestDiff = diffInMilliseconds;
+            closestEvent = i;
         }
-      });
-
-      if (closestEvent) {
+    });
+    
+    if (closestEvent) {
         const index = event.indexOf(closestEvent);
         event.splice(index, 1);
-
-        const targetTime = moment(closestEvent.date);
+    
+        const targetTime = moment(closestEvent.date).add(45, 'seconds'); 
         if (currentTime.isAfter(targetTime)) {
-          setTimeout(() => {
-            insert(closestEvent, 'DONT');
-            deleteEvent(closestEvent);
-          }, 5000);
+            setTimeout(() => {
+                insert(closestEvent, 'DONT');
+                deleteEvent(closestEvent);
+            }, 5000);
         } else {
-          eventsPendents.push(closestEvent);
+            eventsPendents.push(closestEvent);
         }
-      }
+    }
       let NowEvent = closestEvent;
       const timeNow = moment().subtract(3,'hours');
       const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
       let content;
 
-      content = `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} | Proximo Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")}`;
+      content = `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} , Proximo Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
       console.log('time' , timeNow < timeEvent, timeNow , timeEvent)
       if (NowEvent && timeNow < timeEvent) {
         eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
@@ -83,10 +83,10 @@ async function search_event(page, argument) {
         console.log('now_hour' , now_hour > eventTime , now_hour , eventTime)
         if (now_hour > eventTime) {
           startEvent(NowEvent, page);
-          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}`;
+          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")},Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
         }
       }
-      fs.appendFile('./log.txt', content + '\n', (err) => {
+      fs.appendFile('./log.csv', content + '\n', (err) => {
         return;
       });
     }
