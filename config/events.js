@@ -59,8 +59,8 @@ async function search_event(page, argument) {
         const index = event.indexOf(closestEvent);
         event.splice(index, 1);
     
-        const targetTime = moment(closestEvent.date).add(45, 'seconds'); 
-        if (currentTime.isAfter(targetTime)) {
+        const targetTime = moment(closestEvent.date).add(4, 'minutes'); 
+        if (currentTime > targetTime) {
             setTimeout(() => {
                 insert(closestEvent, 'DONT');
                 deleteEvent(closestEvent);
