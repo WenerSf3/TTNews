@@ -125,7 +125,6 @@ app.post('/login', async (req, res) => {
 
     if (!browser) {
       browser = await playwright.firefox.launch({ headless: true });
-      page = await browser.newPage();
     }
     status = true;
 
