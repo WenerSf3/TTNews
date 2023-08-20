@@ -19,12 +19,13 @@ async function startEvent(evento, web) {
     `${moment().format("YYYY-MM-DD")} ${horario}`,
     "YYYY-MM-DD HH:mm:ss"
   );
+
   let missing = 0;
   let started = false;
   let time = setInterval(async () => {
     horarioMoment = horarioMoment.add(1, "second");
     missing = hourEvent.diff(horarioMoment, "seconds");
-    if (missing <= 25 && !started) {
+    if (missing <= 13 && !started) {
       started = true;
       global.price = await getActive(evento.cambio);
       clearInterval(time);

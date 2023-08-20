@@ -5,6 +5,27 @@ const fs = require('fs');
 let database = connection.promise();
 let now_hour;
 
+async function AlterCambio(page, ativo) {
+  try {
+    await page.click(".asset-select__button", { timeout: 1000 });
+    await page.waitForTimeout(500);
+  } catch (e) {
+  }
+
+
+  try {
+    await page.locator(".asset-select__search-input", { timeout: 1000 }).fill(String(ativo));
+  } catch (e) {
+  }
+
+  await page.waitForTimeout(500);
+
+  try {
+    await page.click(".assets-table__name", { timeout: 1000 });
+  } catch (e) {
+  }
+}
+
 async function search_event(page, argument) {
   if (argument === "start") {
 
@@ -25,20 +46,21 @@ async function search_event(page, argument) {
       }
     });
     let NowEvent = closestEvent;
-
     const timeNow = moment().subtract(3, 'hours');
-    const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
-    let content;
+    let content =  `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} `;
+    if (NowEvent && NowEvent.date) {
+      await AlterCambio(page,NowEvent.cambio);
 
-    content = `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} , Proximo Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
+      const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
+      
+      if (NowEvent && timeNow < timeEvent) {
+        eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
 
-    if (NowEvent && timeNow < timeEvent) {
-      eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
-
-      now_hour = moment(timeNow).add(3 ,'hours').add(10, 'minutes').format("YYYY-MM-DD HH:mm:ss");
-      if (now_hour > eventTime) {
-        startEvent(NowEvent, page);
-        content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}, Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
+        now_hour = moment(timeNow).add(3, 'hours').add(10, 'minutes').format("YYYY-MM-DD HH:mm:ss");
+        if (now_hour > eventTime) {
+          startEvent(NowEvent, page);
+          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}, Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
+        }
       }
     }
     fs.appendFile('./log.csv', content + '\n', (err) => {
