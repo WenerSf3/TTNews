@@ -1,6 +1,7 @@
 const moment = require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
+const { getM  , eventM } = require('./timeZone.js')
 const fs = require('fs');
 let database = connection.promise();
 let now_hour;
@@ -33,12 +34,11 @@ async function search_event(page, argument) {
       `SELECT * FROM Eventos;`
     );
 
-    const currentTime = moment().subtract(3, 'hours');
-
+    const currentTime = getM();
 
     let closestEvent;
     events.forEach((i) => {
-      const targetTime = moment(i.date, 'YYYY-MM-DD HH:mm:ss').subtract(3, 'hours');
+      const targetTime = eventM(i.date);
       const diffInMilliseconds = targetTime.diff(currentTime) / 1000;
 
       if (diffInMilliseconds > 0 && diffInMilliseconds < 360) {
@@ -46,20 +46,20 @@ async function search_event(page, argument) {
       }
     });
     let NowEvent = closestEvent;
-    const timeNow = moment().subtract(3, 'hours');
-    let content =  `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")}`;
+    const timeNow = getM();
+    let content =  `Não encontrado! -> ${timeNow} ${eventM(NowEvent.date)}`;
     if (NowEvent && NowEvent.date) {
       await AlterCambio(page,NowEvent.cambio);
 
-      const timeEvent = moment(NowEvent.date).subtract(10, 'seconds');
+      const timeEvent = eventM(NowEvent.date).subtract(10, 'seconds');
       
       if (NowEvent && timeNow < timeEvent) {
-        eventTime = moment(NowEvent.date).format("YYYY-MM-DD HH:mm:ss");
+        let eventTime = eventM(NowEvent.date);
 
-        now_hour = moment(timeNow).add(3, 'hours').add(10, 'minutes').format("YYYY-MM-DD HH:mm:ss");
+        now_hour = eventM(timeNow).add(10, 'minutes');
         if (now_hour > eventTime) {
           startEvent(NowEvent, page);
-          content = `Encontrado! -> ${moment().subtract(3, 'hours').format("YYYY-MM-DD HH:mm")}, Evento! -> ${moment(NowEvent.date).format("YYYY-MM-DD HH:mm")},`;
+          content = `Encontrado! -> ${getM()}, Evento! -> ${eventM(NowEvent.date)},`;
         }
       }
     }

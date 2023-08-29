@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const express = require('express');
 const path = require('path');
 const app = express();
-const { search_event } = require('./config/events.js')
+const { search_event } = require('./config/events.js');
 const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent, createNewEvent, EditEvent } = require('./config/database.js')
 
 const connection = mysql.createConnection({
