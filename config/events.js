@@ -47,7 +47,7 @@ async function search_event(page, argument) {
     });
     let NowEvent = closestEvent;
     const timeNow = moment().subtract(3, 'hours');
-    let content =  `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} `;
+    let content =  `Não encontrado! -> ${timeNow.format("YYYY-MM-DD HH:mm")} ${NowEvent.format("YYYY-MM-DD HH:mm")}`;
     if (NowEvent && NowEvent.date) {
       await AlterCambio(page,NowEvent.cambio);
 
