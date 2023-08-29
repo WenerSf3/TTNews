@@ -1,7 +1,7 @@
-const moment = require("moment");
+require("moment");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
-const { getM  , eventM } = require('./timeZone.js')
+const { getM  , eventM } = require('./timeZone.js');
 const fs = require('fs');
 let database = connection.promise();
 let now_hour;
@@ -37,10 +37,11 @@ async function search_event(page, argument) {
     const currentTime = getM();
 
     let closestEvent;
+    console.log(currentTime);
     events.forEach((i) => {
       const targetTime = eventM(i.date);
       const diffInMilliseconds = targetTime.diff(currentTime) / 1000;
-
+    
       if (diffInMilliseconds > 0 && diffInMilliseconds < 360) {
         closestEvent = i;
       }
