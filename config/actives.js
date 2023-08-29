@@ -3,7 +3,7 @@ const moment = require('moment');
 
 async function getActive(active) {
     
-    const webActive = await playwright.firefox.launch({ headless: true });
+    const webActive = await playwright.firefox.launch({ headless: false });
     const page = await webActive.newPage();
     
     await page.goto(`https://br.tradingview.com/symbols/${active}/`);

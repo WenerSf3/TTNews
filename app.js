@@ -124,7 +124,7 @@ app.post('/login', async (req, res) => {
     }
 
     if (!browser) {
-      browser = await playwright.firefox.launch({ headless: true });
+      browser = await playwright.firefox.launch({ headless: false });
     }
     status = true;
 
@@ -151,7 +151,7 @@ app.post('/TTNstart', async (req, res) => {
       await page.close();
     }
 
-    browser = await playwright.firefox.launch({ headless: true });
+    browser = await playwright.firefox.launch({ headless: false });
     page = await browser.newPage();
 
     await page.goto('https://qxbroker.com/en/sign-in/');
