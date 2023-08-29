@@ -31,7 +31,7 @@ let page;
 let status = false;
 
 const PORT = process.env.PORT;
-const IP = process.env.IP;
+const IP = `154.56.41.121`;
 
 app.listen(PORT, () => {
   console.log(`API rodando em http://${IP}:${PORT}`);
