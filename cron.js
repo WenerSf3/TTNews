@@ -20,10 +20,10 @@ const job = new CronJob(
     async function () {
         try {
             const [event] = await database.query(
-                `SELECT * FROM Eventos WHERE posicao = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
+                `SELECT * FROM events WHERE status = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
             );
 
-            const [account] = await database.query(`SELECT * FROM Users LIMIT 1;`);
+            const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
 
             if (event.length > 0 && account[0].search !== '0') {
                 const obj = {

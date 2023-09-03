@@ -1,7 +1,7 @@
-require("moment");
+const moment = require("moment-timezone");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
-const { getM  , eventM } = require('./timeZone.js');
+const { getM, eventM, eventDiference } = require('./timeZone.js');
 const fs = require('fs');
 let database = connection.promise();
 let now_hour;
@@ -31,38 +31,33 @@ async function search_event(page, argument) {
   if (argument === "start") {
 
     const [events] = await database.query(
-      `SELECT * FROM Eventos;`
+      `SELECT * FROM events;`
     );
 
-    const currentTime = getM();
-
     let closestEvent;
-    console.log(currentTime);
+    let closestTimeDifference = Infinity;
+
     events.forEach((i) => {
-      const targetTime = eventM(i.date);
-      const diffInMilliseconds = targetTime.diff(currentTime) / 1000;
-    
-      if (diffInMilliseconds > 0 && diffInMilliseconds < 360) {
-        closestEvent = i;
-      }
-    });
-    let NowEvent = closestEvent;
-    const timeNow = getM();
-    let content =  `Não encontrado! -> ${timeNow} ${eventM(NowEvent.date)}`;
-    if (NowEvent && NowEvent.date) {
-      await AlterCambio(page,NowEvent.cambio);
-
-      const timeEvent = eventM(NowEvent.date).subtract(10, 'seconds');
-      
-      if (NowEvent && timeNow < timeEvent) {
-        let eventTime = eventM(NowEvent.date);
-
-        now_hour = eventM(timeNow).add(10, 'minutes');
-        if (now_hour > eventTime) {
-          startEvent(NowEvent, page);
-          content = `Encontrado! -> ${getM()}, Evento! -> ${eventM(NowEvent.date)},`;
+      const diffInMilliseconds = eventDiference(i.date);
+      if (diffInMilliseconds > 0 && diffInMilliseconds < 360 * 1000) {
+        if (diffInMilliseconds < closestTimeDifference) {
+          closestEvent = i;
+          closestTimeDifference = diffInMilliseconds;
         }
       }
+    });
+    let content;
+    let timeNow = moment().format('YYYY-MM-DD HH:mm:ss');
+    let NowEvent = closestEvent;
+    if (NowEvent && NowEvent.date) {
+      content = `Não encontrado! -> ${timeNow} ${eventM(NowEvent.date)}`;
+    } else {
+      content = `Não encontrado e nenhum evento futuro! -> ${timeNow}`;
+    }
+    if (NowEvent && NowEvent.date) {
+      await AlterCambio(page, NowEvent.active);
+      startEvent(NowEvent, page);
+      content = `Encontrado! -> ${getM()}, Evento! -> ${eventM(NowEvent.date)},`;
     }
     fs.appendFile('./log.csv', content + '\n', (err) => {
       return;

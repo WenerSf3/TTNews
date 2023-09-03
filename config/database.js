@@ -5,12 +5,12 @@ let database = connection.promise();
 async function insert(evento, status) {
   try {
     const [rows, fields] = await database.execute(
-      `INSERT INTO Historico (evento, cambio, horario, pavil, resultado) VALUES (?, ?, ?, ?, ?);`,
+      `INSERT INTO historic (name, active, date, pips, result) VALUES (?, ?, ?, ?, ?);`,
       [
-        evento.event_name,
-        evento.cambio,
+        evento.name,
+        evento.active,
         `${moment(evento.date).format("YYYY-MM-DD HH:mm:ss")}`,
-        `${evento.pavil}`,
+        `${evento.pips}`,
         `${status}`,
       ]
     );
@@ -24,7 +24,7 @@ async function insert(evento, status) {
 async function deleteEvent(event) {
   try {
     const [rows, fields] = await database.execute(
-      `DELETE FROM Eventos WHERE id = ${event.id};`
+      `DELETE FROM events WHERE id = ${event.id};`
     );
 
     console.log("Registro excluído com sucesso!");
@@ -36,7 +36,7 @@ async function deleteEvent(event) {
 async function createNewEvent(data) {
   try {
     let newEvent = await database.execute(
-      `INSERT INTO Eventos (nivel, event_name, cambio, posicao, pavil, valor, date)
+      `INSERT INTO events (level, name, active, status, pips, investing, date)
     VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         data.nivel,
@@ -57,7 +57,7 @@ async function createNewEvent(data) {
 async function EditEvent(data) {
   try {
     let updatedEvent = await database.execute(
-      `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
+      `UPDATE events SET level=?, nane=?, active=?, status=?, pips=?, investing=?, date=? WHERE id=?`,
       [
         data.nivel,
         data.event_name,
@@ -79,7 +79,7 @@ async function EditEvent(data) {
 async function enableEvents() {
   try {
     let OK = await database.execute(
-      `UPDATE Users SET search = '1' WHERE id = 1;`
+      `UPDATE users SET search = '1' WHERE id = 1;`
     );
     return OK;
   } catch (error) {
@@ -90,7 +90,7 @@ async function enableEvents() {
 async function disableEvents() {
   try {
     const [rows, fields] = await database.execute(
-      `UPDATE Users SET search = '0' WHERE id = 1;`
+      `UPDATE users SET search = '0' WHERE id = 1;`
     );
 
     console.log("Registro atualizado com sucesso!");
@@ -102,7 +102,7 @@ async function disableEvents() {
 async function enableEvents() {
   try {
     let OK = await database.execute(
-      `UPDATE Users SET search = '1' WHERE id = 1;`
+      `UPDATE users SET search = '1' WHERE id = 1;`
     );
     return OK;
   } catch (error) {
@@ -113,7 +113,7 @@ async function enableEvents() {
 async function getStatus() {
   try {
     const [rows, fields] = await database.execute(
-      `UPDATE Users SET search = '0' WHERE id = 1;`
+      `UPDATE users SET search = '0' WHERE id = 1;`
     );
 
     console.log("Registro atualizado com sucesso!");

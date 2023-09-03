@@ -25,12 +25,12 @@ async function startEvent(evento, web) {
   let time = setInterval(async () => {
     horarioMoment = horarioMoment.add(1, "second");
     missing = hourEvent.diff(horarioMoment, "seconds");
-    if (missing <= 13 && !started) {
+    if (missing <= 11 && !started) {
       started = true;
-      global.price = await getActive(evento.cambio);
+      global.price = await getActive(evento.active);
       clearInterval(time);
-      let self = (parseFloat(global.price) - (evento.pavil / 100000)).toFixed(5);
-      let buy = (parseFloat(global.price) + (evento.pavil / 100000)).toFixed(5);
+      let self = (parseFloat(global.price) - (evento.pips / 100000)).toFixed(5);
+      let buy = (parseFloat(global.price) + (evento.pips / 100000)).toFixed(5);
 
       await web.locator(".section-deal__pending").click();
       await web.locator(".form-pending-trade__input-text").fill(String(buy));
@@ -43,7 +43,7 @@ async function startEvent(evento, web) {
 
       setTimeout(() => {
         resetSteps(web);
-      }, 11000);
+      }, 15000);
       insert(evento, 'WIN');
       deleteEvent(evento);
       console.log('Evento Concluido!!');

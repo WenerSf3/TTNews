@@ -1,30 +1,25 @@
-const playwright = require('playwright');
-const mysql = require('mysql2');
-const express = require('express');
-const path = require('path');
-const app = express();
 const { search_event } = require('./config/events.js');
-const { enableEvents, disableEvents, getStatus, getEvents, deleteEvent, createNewEvent, EditEvent } = require('./config/database.js')
-
-const connection = mysql.createConnection({
-  host: 'db4free.net',
-  user: 'genosgx',
-  password: '12345678',
-  database: 'ggxttn',
-  port: 3306
-});
-const fs = require('fs');
+const connection = require('./config/connection.js');
+const playwright = require('playwright');
+let database = connection.promise();
+const express = require('express');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const app = express();
+app.use(express.json());
+const { createNewEvent,
+        disableEvents,
+        enableEvents,
+        deleteEvent,
+        getStatus,
+        getEvents,
+        EditEvent } = require('./config/database.js');
 
 if (fs.existsSync('./dev.v')) {
   dotenv.config({ path: '.env.development' });
 } else {
   dotenv.config();
 }
-
-let database = connection.promise();
-
-app.use(express.json());
 
 let browser;
 let page;
@@ -51,7 +46,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.get('/', (req, res) => {
   res.send('OK');
 });
@@ -68,7 +62,7 @@ app.post('/preparingEvent', (req, res) => {
 app.get('/checkBtn', async (req, res) => {
 
   const [account] = await database.query(
-    'SELECT * FROM Users LIMIT 1;');
+    'SELECT * FROM users LIMIT 1;');
 
   return res.status(200).json({ success: true, status: account[0].search });
 });
@@ -86,7 +80,7 @@ app.post('/startprocess', async (req, res) => {
   if (request.argument == 'start') {
     await enableEvents();
     const [account] = await database.query(
-      'SELECT * FROM Users LIMIT 1;');
+      'SELECT * FROM users LIMIT 1;');
 
     return res.status(200).json({ success: true, message: 'Ligado com sucesso', statuss: account[0].search });
 
@@ -94,7 +88,7 @@ app.post('/startprocess', async (req, res) => {
   if (request.argument == 'stop') {
     await disableEvents();
     const [account] = await database.query(
-      'SELECT * FROM Users');
+      'SELECT * FROM users');
     return res.status(200).json({ success: true, message: 'Ligado com sucesso', statuss: account[0].search });
   }
   return res.status(404).json({ success: false, message: 'Erro no TTN' });
@@ -106,7 +100,7 @@ app.post('/login', async (req, res) => {
     const request = req.body;
 
     const [account] = await database.query(
-      'SELECT * FROM Users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
+      'SELECT * FROM users WHERE email = ? AND password = ? AND `key` = ? LIMIT 1',
       [request.email, request.password, request.key]
     );
 
@@ -161,10 +155,7 @@ app.post('/TTNstart', async (req, res) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     await page.getByRole('button', { name: 'Sign in' }).click();
     await new Promise(resolve => setTimeout(resolve, 2500));
-    console.log('clicou em login');
-
     await page.waitForTimeout(1000);
-    console.log('clicou em login');
 
     const errorElement = await page.$('form > .modal-sign__input > .hint.-danger');
     if (errorElement) {
@@ -174,7 +165,6 @@ app.post('/TTNstart', async (req, res) => {
 
     try {
       await page.waitForSelector('.button.button--primary.button--spaced > span', { timeout: 2000 });
-      console.log('fez login');
       let verify = {
         msg: 'Falta verificação!',
         success: 'fail_2'
@@ -317,7 +307,7 @@ app.post('/editEvent', async (req, res) => {
 
 
   let [updatedEvent] = await database.execute(
-    `UPDATE Eventos SET nivel=?, event_name=?, cambio=?, posicao=?, pavil=?, valor=?, date=? WHERE id=?`,
+    `UPDATE events SET level=?, name=?, active=?, status=?, pips=?, investing=?, date=? WHERE id=?`,
     [
       request.nivel,
       request.event_name,
@@ -335,7 +325,7 @@ app.post('/editEvent', async (req, res) => {
 app.post('/deleteEvent', async (req, res) => {
   const request = req.body;
   const [evento] = await database.execute(
-    `DELETE FROM Eventos WHERE id = ${request.id};`
+    `DELETE FROM events WHERE id = ${request.id};`
   );
   return res.status(200).json({ Ttn: false, message: 'deletado com sucesso!', event: evento });
 
@@ -428,7 +418,7 @@ app.get('/getEvents', async (req, res) => {
     return;
   } else {
     try {
-      const [eventos] = await database.execute(`SELECT * FROM Eventos;`);
+      const [eventos] = await database.execute(`SELECT * FROM events;`);
       return res.status(200).json({ success: true, list: eventos });
     } catch (error) {
       return res.status(404).json({ erro: error });
