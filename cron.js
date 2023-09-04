@@ -30,6 +30,7 @@ const job = new CronJob(
                     argument: 'start'
                 };
 
+                console.log(`dispare http://${IP}:${PORT}/preparingEvent`);
                 await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
                 await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
                 return;
