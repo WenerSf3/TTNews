@@ -64,7 +64,6 @@ async function search_event(page, argument) {
       startEvent(NowEvent, page);
       data.status = `Encontrado! ->`;
     }
-    console.log(data)
     createcron(data);
     return;
 
