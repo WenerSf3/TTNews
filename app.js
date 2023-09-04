@@ -47,6 +47,15 @@ app.post('/preparingEvent', (req, res) => {
   return res.send('Ok!');
 
 });
+
+app.get('/cron', async (req, res) => {
+  const [events] = await database.query(
+    `SELECT * FROM cron;`
+  );
+  return res.status(200).json({ success: true, cron:events });
+
+});cron
+
 app.get('/checkBtn', async (req, res) => {
 
   const [account] = await database.query(
