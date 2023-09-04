@@ -56,20 +56,24 @@ async function createNewEvent(data) {
 
 async function createcron(data) {
   try {
-    let newEvent = await database.execute(
-      `INSERT INTO cron (next_event, now_date, status)
-    VALUES (?, ?, ?)`,
-      [
-        data.next_event,
-        data.now_date,
-        data.status
-      ]
-    );
+    if (data.next_event == null || data.next_event == '') {
+      data.next_event = ' :( ';
+    }
+    if (data.status == null || data.status == '') {
+      data.status = ' :( ';
+    }
+
+    const sql = `INSERT INTO cron (next_event, now_date, status) VALUES (?, NOW(), ?)`;
+    const values = [data.next_event, data.status];
+
+    const [newEvent] = await database.execute(sql, values);
     return newEvent;
   } catch (error) {
     console.log("error", error);
+    throw error; // Lançar o erro novamente para que possa ser tratado onde você chama essa função, se necessário.
   }
 }
+
 
 async function EditEvent(data) {
   try {

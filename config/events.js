@@ -49,22 +49,22 @@ async function search_event(page, argument) {
     });
     let content;
     let data = {
-      next_event: getM(),
+      now_data: moment().format('DD-MM-YYYY HH:mm:ss'),
     };
     let NowEvent = closestEvent;
     if (NowEvent && NowEvent.date) {
       data.status = `Não encontrado! ->`
-      data.now_data = eventM(NowEvent.date);
+      data.next_event = moment(NowEvent.date).format('DD-MM-YYYY HH:mm:ss');
     } else {
       data.status = `Sem eventos! ->`
     }
     if (NowEvent && NowEvent.date) {
       await AlterCambio(page, NowEvent.active);
       startEvent(NowEvent, page);
-      content = `Encontrado! -> ${getM()}, Evento! -> ${eventM(NowEvent.date)},`;
+      data.status = `Encontrado! ->`;
     }
     
-    createcron(data);
+    await createcron(data);
     return;
 
   }
