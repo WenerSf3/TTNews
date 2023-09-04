@@ -16,7 +16,7 @@ const IP = process.env.IP;
 const PORT = process.env.PORT;
 
 const job = new CronJob(
-    '*/5 * * * *',
+    '*/1 * * * *',
     async function () {
         try {
 
