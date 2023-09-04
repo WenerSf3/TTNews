@@ -12,7 +12,7 @@ function eventDiference(date) {
     let timenow = moment();
     let eventTime = moment(date);
     console.log('test 1' ,timenow ,'evento', eventTime )
-    let diference = ((timenow.diff(eventTime) / 1000) * -1).toFixed(0);
+    let diference = (timenow.diff(eventTime) / 1000).toFixed(0);
     console.log(diference )
     return diference;
 }

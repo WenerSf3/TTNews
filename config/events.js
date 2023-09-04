@@ -39,7 +39,6 @@ async function search_event(page, argument) {
     let closestTimeDifference = Infinity;
 
     events.forEach((i) => {
-      console.log('i.date', i.date)
       const diffInMilliseconds = eventDiference(i.date);
       if (diffInMilliseconds > 0 && diffInMilliseconds < 360 * 1000) {
         if (diffInMilliseconds < closestTimeDifference) {
