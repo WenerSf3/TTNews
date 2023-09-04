@@ -39,6 +39,7 @@ async function search_event(page, argument) {
     let closestTimeDifference = Infinity;
 
     events.forEach((i) => {
+      console.log('i.date', i.date)
       const diffInMilliseconds = eventDiference(i.date);
       if (diffInMilliseconds > 0 && diffInMilliseconds < 360 * 1000) {
         if (diffInMilliseconds < closestTimeDifference) {
@@ -51,6 +52,8 @@ async function search_event(page, argument) {
       now_date: moment().format('DD-MM-YYYY HH:mm:ss'),
     };
     let NowEvent = closestEvent;
+    console.log('iNowEvent',NowEvent)
+
     if (NowEvent && NowEvent.date) {
       data.status = `Não encontrado! ->`
       data.next_event = moment(NowEvent.date,'DD-MM-YYYY HH:mm:ss');

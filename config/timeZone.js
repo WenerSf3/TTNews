@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 function getM() {
-    return moment().subtract(3, 'hours').format('YYYY-MM-DD HH:mm:ss');
+    return moment().format('YYYY-MM-DD HH:mm:ss');
 }
 
 function eventM(date) {
@@ -9,10 +9,11 @@ function eventM(date) {
 }
 
 function eventDiference(date) {
-    let timenow = moment().subtract(3, 'hours');
-    console.log(timenow)
+    let timenow = moment();
     let eventTime = moment(date);
+    console.log('test 1' ,timenow ,'evento', eventTime )
     let diference = ((timenow.diff(eventTime) / 1000) * -1).toFixed(0);
+    console.log(diference )
     return diference;
 }
 
