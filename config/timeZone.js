@@ -9,8 +9,8 @@ function eventM(date) {
 }
 
 function eventDiference(date) {
-    let timenow = moment();
-    let eventTime = moment(date);
+    let timenow = moment().format('YYYY-MM-DD HH:mm:ss');
+    let eventTime = moment(date,'YYYY-MM-DD HH:mm:ss');
     console.log('test 1' ,timenow ,'evento', eventTime )
     let diference = (timenow.diff(eventTime) / 1000).toFixed(0);
     console.log(diference )
