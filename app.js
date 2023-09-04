@@ -27,23 +27,10 @@ let status = false;
 
 const PORT = process.env.PORT;
 const IP = process.env.IP;
+app.use(cors());
 
 app.listen(PORT, () => {
   console.log(`API rodando em http://${IP}:${PORT}`);
-});
-
-app.use((req, res, next) => {
-  const allowedOrigins = [`http://${IP}:8080`, `http://${IP}`];
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  next();
 });
 
 app.get('/', (req, res) => {
