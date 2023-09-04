@@ -12,14 +12,9 @@ function eventDiference(date) {
     let eventTime = moment(date);
     let now = moment();
   console.log(now  , eventTime)
-
+  let secondsRemaining = eventTime.diff(now, 'seconds');
   
-    if (eventTime.isBefore(now)) {
-      return 0;
-    }
-  
-    let secondsRemaining = eventTime.diff(now, 'seconds');
-  console.log(secondsRemaining)
+  console.log('diferença',secondsRemaining)
     return secondsRemaining;
 }
   
