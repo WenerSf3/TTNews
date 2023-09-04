@@ -11,6 +11,8 @@ function eventM(date) {
 function eventDiference(date) {
     let eventTime = moment(date);
     let now = moment();
+  console.log(now  , eventTime)
+
   
     if (eventTime.isBefore(now)) {
       return 0;
