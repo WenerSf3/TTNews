@@ -9,15 +9,17 @@ function eventM(date) {
 }
 
 function eventDiference(date) {
-    let timenow = moment();
     let eventTime = moment(date);
-    console.log('test 1', timenow, 'evento', eventTime);
-    
-    let difference = Math.abs(timenow.diff(eventTime, 'seconds'));
-    console.log(difference);
-    
-    return difference;
-  }
+    let now = moment();
+  
+    if (eventTime.isBefore(now)) {
+      return 0;
+    }
+  
+    let secondsRemaining = eventTime.diff(now, 'seconds');
+  
+    return secondsRemaining;
+}
   
 
 exports.eventDiference = eventDiference;
