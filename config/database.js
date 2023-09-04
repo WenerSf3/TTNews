@@ -63,8 +63,8 @@ async function createcron(data) {
       data.status = ' :( ';
     }
 
-    const sql = `INSERT INTO cron (next_event, now_date, status) VALUES (?, NOW(), ?)`;
-    const values = [data.next_event, data.status];
+    const sql = `INSERT INTO cron (next_event, now_date, status) VALUES (?,?, ?)`;
+    const values = [data.next_event, moment().subtract(3,'hours').format('DD/MM/YYYY HH:mm:ss'), data.status];
 
     const [newEvent] = await database.execute(sql, values);
     return newEvent;
