@@ -10,6 +10,7 @@ function eventM(date) {
 
 function eventDiference(date) {
     let timenow = moment().subtract(3, 'hours');
+    console.log(timenow)
     let eventTime = moment(date);
     let diference = ((timenow.diff(eventTime) / 1000) * -1).toFixed(0);
     return diference;
