@@ -47,14 +47,13 @@ async function search_event(page, argument) {
         }
       }
     });
-    let content;
     let data = {
-      now_data: moment().format('DD-MM-YYYY HH:mm:ss'),
+      now_data: moment().subtract(3, 'hours').format('DD-MM-YYYY HH:mm:ss'),
     };
     let NowEvent = closestEvent;
     if (NowEvent && NowEvent.date) {
       data.status = `Não encontrado! ->`
-      data.next_event = moment(NowEvent.date).format('DD-MM-YYYY HH:mm:ss');
+      data.next_event = moment(NowEvent.date,'DD-MM-YYYY HH:mm:ss');
     } else {
       data.status = `Sem eventos! ->`
     }
