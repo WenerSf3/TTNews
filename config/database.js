@@ -54,6 +54,23 @@ async function createNewEvent(data) {
   }
 }
 
+async function createcron(data) {
+  try {
+    let newEvent = await database.execute(
+      `INSERT INTO cron (next_event, now_date, status)
+    VALUES (?, ?, ?)`,
+      [
+        data.next_event,
+        data.now_date,
+        data.status
+      ]
+    );
+    return newEvent;
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
 async function EditEvent(data) {
   try {
     let updatedEvent = await database.execute(
@@ -129,3 +146,4 @@ exports.disableEvents = disableEvents;
 exports.getStatus = getStatus;
 exports.EditEvent = EditEvent;
 exports.createNewEvent = createNewEvent;
+exports.createcron = createcron;

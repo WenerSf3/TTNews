@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const connection = require("./connection.js");
 const { startEvent } = require("./startEvent.js");
 const { getM, eventM, eventDiference } = require('./timeZone.js');
+const { createcron } = require("./database");
 const fs = require('fs');
 let database = connection.promise();
 let now_hour;
@@ -47,21 +48,24 @@ async function search_event(page, argument) {
       }
     });
     let content;
-    let timeNow = moment().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+      next_event: getM(),
+    };
     let NowEvent = closestEvent;
     if (NowEvent && NowEvent.date) {
-      content = `Não encontrado! -> ${timeNow} ${eventM(NowEvent.date)}`;
+      data.status = `Não encontrado! ->`
+      data.now_data = eventM(NowEvent.date);
     } else {
-      content = `Não encontrado e nenhum evento futuro! -> ${timeNow}`;
+      data.status = `Sem eventos! ->`
     }
     if (NowEvent && NowEvent.date) {
       await AlterCambio(page, NowEvent.active);
       startEvent(NowEvent, page);
       content = `Encontrado! -> ${getM()}, Evento! -> ${eventM(NowEvent.date)},`;
     }
-    fs.appendFile('./log.csv', content + '\n', (err) => {
-      return;
-    });
+    
+    createcron(data);
+    return;
 
   }
 }
