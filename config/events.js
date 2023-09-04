@@ -48,7 +48,7 @@ async function search_event(page, argument) {
       }
     });
     let data = {
-      now_data: moment().subtract(3, 'hours').format('DD-MM-YYYY HH:mm:ss'),
+      now_date: moment().subtract(3, 'hours').format('DD-MM-YYYY HH:mm:ss'),
     };
     let NowEvent = closestEvent;
     if (NowEvent && NowEvent.date) {
