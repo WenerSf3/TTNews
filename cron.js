@@ -19,19 +19,14 @@ const job = new CronJob(
     '*/5 * * * *',
     async function () {
         try {
-            const [event] = await database.query(
-                `SELECT * FROM events WHERE status = 'pendente';`
-            );
 
             const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-            console.log('event',event);
 
-            if (event.length > 0 && account[0].search !== '0') {
+            if (account[0].search !== '0') {
                 const obj = {
                     argument: 'start'
                 };
 
-                console.log(`dispare http://${IP}:${PORT}/preparingEvent`);
                 await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
                 await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
                 return;
