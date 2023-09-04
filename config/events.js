@@ -51,7 +51,6 @@ async function search_event(page, argument) {
       now_date: moment().format('DD-MM-YYYY HH:mm:ss'),
     };
     let NowEvent = closestEvent;
-    console.log('iNowEvent',NowEvent)
 
     if (NowEvent && NowEvent.date) {
       data.status = `Não encontrado! ->`
@@ -64,6 +63,8 @@ async function search_event(page, argument) {
       startEvent(NowEvent, page);
       data.status = `Encontrado! ->`;
     }
+    console.log('criando cronn list')
+
     createcron(data);
     return;
 

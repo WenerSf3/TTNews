@@ -62,7 +62,7 @@ async function createcron(data) {
     if (data.status == null || data.status == '') {
       data.status = ' :( ';
     }
-
+    console.log('criando cronn list')
     const sql = `INSERT INTO cron (next_event, now_date, status) VALUES (?, ?, ?)`;
     const values = [data.next_event, data.now_date, data.status];
 
