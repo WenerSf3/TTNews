@@ -16,11 +16,11 @@ const IP = process.env.IP;
 const PORT = process.env.PORT;
 
 const job = new CronJob(
-    '*/1 * * * *',
+    '*/5 * * * *',
     async function () {
         try {
             const [event] = await database.query(
-                `SELECT * FROM events WHERE status = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
+                `SELECT * FROM events WHERE status = 'pendente';`
             );
 
             const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
