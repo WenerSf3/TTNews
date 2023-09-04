@@ -24,7 +24,7 @@ const job = new CronJob(
             );
 
             const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-            console.log('account',account);
+            console.log('event',event);
 
             if (event.length > 0 && account[0].search !== '0') {
                 const obj = {
