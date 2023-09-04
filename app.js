@@ -4,6 +4,7 @@ const playwright = require('playwright');
 let database = connection.promise();
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const fs = require('fs');
 const app = express();
 app.use(express.json());
