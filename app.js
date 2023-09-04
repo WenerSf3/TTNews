@@ -54,7 +54,7 @@ app.get('/cron', async (req, res) => {
   );
   return res.status(200).json({ success: true, cron:events });
 
-});cron
+});
 
 app.get('/checkBtn', async (req, res) => {
 
