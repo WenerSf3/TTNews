@@ -17,7 +17,7 @@ function eventDiference(date) {
     }
   
     let secondsRemaining = eventTime.diff(now, 'seconds');
-  
+  console.log(secondsRemaining)
     return secondsRemaining;
 }
   
