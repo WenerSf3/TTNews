@@ -36,9 +36,9 @@ const job = new CronJob(
                 return;
             } else {
                 let data = {
-                    next_event: `${IP}:${PORT}`, 
-                    now_date: `${JSON.stringify(account)}`, 
-                    status: `${event.length > 0 && account[0].search !== 0}`
+                    next_event: `${account[0].search !== 0}`, 
+                    now_date: `${event.length > 0 }`, 
+                    status: `Nao habilitado`
                 }
                 createcron(data)
                 return;
