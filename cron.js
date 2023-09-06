@@ -38,7 +38,7 @@ const job = new CronJob(
                 let data = {
                     next_event: `${IP}:${PORT}`, 
                     now_date: `${JSON.stringify(account)}`, 
-                    status: `${event}`
+                    status: `${event.length > 0 && account[0].search !== 0}`
                 }
                 createcron(data)
                 return;
