@@ -36,9 +36,9 @@ const job = new CronJob(
                 return;
             } else {
                 let data = {
-                    next_event: 'Não', 
-                    now_date: 'Esta', 
-                    status: 'Ativo'
+                    next_event: `${$IP}:${PORT}`, 
+                    now_date: `${account}`, 
+                    status: `${event}`
                 }
                 createcron(data)
                 return;
