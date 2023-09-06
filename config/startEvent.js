@@ -48,14 +48,14 @@ async function startEvent(evento, web, banca = null) {
         var after = afterbanca.replace(/£/g, '');
         if (banca) {
           if (parseInt(after) > banca) {
-            insert(evento, `WIN = ${after}`);
+            insert(evento, `WIN = ${after == null ? 'NULL' : after }`);
           } else if (parseInt(after) < banca) {
-            insert(evento, `LOSS = ${after}`);
+            insert(evento, `LOSS = ${after == null ? 'NULL' : after}`);
           } else {
-            insert(evento, `SEM STATUS ${after}`);
+            insert(evento, `SEM STATUS ${after == null ? 'NULL' : after}`);
           }
         } else {
-          insert(evento, `SEM STATUS ${after}`);
+          insert(evento, `SEM STATUS ${after == null ? 'NULL' : after}`);
         }
       }, 15000);
       deleteEvent(evento);
