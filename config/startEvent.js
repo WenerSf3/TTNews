@@ -49,12 +49,12 @@ async function startEvent(evento, web, banca = null) {
       var after = afterbanca.replace(/£/g, '');
       if (banca) {
         if (parseInt(after) > banca) {
-          insert(evento, 'WIN = after');
+          insert(evento, `WIN = ${after}`);
         } else if (parseInt(after) < banca) {
-          insert(evento, 'LOSS = after');
+          insert(evento, `LOSS = ${after}`);
         }
       } else {
-        insert(evento, 'SEM STATUS');
+        insert(evento, `SEM STATUS ${after}`);
 
       }
       deleteEvent(evento);
