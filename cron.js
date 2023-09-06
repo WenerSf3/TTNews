@@ -20,13 +20,10 @@ const job = new CronJob(
     '*/5 * * * *',
     async function () {
         try {
-            const [event] = await database.query(
-                `SELECT * FROM events WHERE status = 'pendente' ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, NOW())) DESC;`
-            );
 
             const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
 
-            if (event.length > 0 && account[0].search !== 0) {
+            if (account[0].search !== 0) {
                 const obj = {
                     argument: 'start'
                 };
@@ -36,11 +33,11 @@ const job = new CronJob(
                 return;
             } else {
                 let data = {
-                    next_event: `permision : ${account[0].search !== 0}`, 
-                    now_date: `events : ${event.length > 0 }`, 
-                    status: `Nao habilitado`
+                    next_event: `Busca`, 
+                    now_date: `permision : ${account[0].search !== 0}`, 
+                    status: ` nao habilitado`
                 }
-                createcron(data)
+                createcron(data);
                 return;
             }
 
