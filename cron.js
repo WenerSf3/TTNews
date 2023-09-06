@@ -1,6 +1,7 @@
 const CronJob = require('cron').CronJob;
 const axios = require('axios');
 const connection = require("./config/connection");
+const { createcron } = require("./config/database");
 const fs = require('fs');
 const dotenv = require('dotenv');
 
@@ -34,7 +35,12 @@ const job = new CronJob(
                 await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
                 return;
             } else {
-                console.log('Desabilitado');
+                let data = {
+                    next_event: 'Não', 
+                    now_date: 'Esta', 
+                    status: 'Ativo'
+                }
+                createcron(data)
                 return;
             }
 
