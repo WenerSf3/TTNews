@@ -17,7 +17,7 @@ const IP = process.env.IP;
 const PORT = process.env.PORT;
 
 const job = new CronJob(
-    '*/1 * * * *',
+    '*/5 * * * *',
     async function () {
         try {
             const [event] = await database.query(
