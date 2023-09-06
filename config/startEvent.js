@@ -3,7 +3,7 @@ const { insert, deleteEvent } = require("./database");
 const moment = require("moment");
 const axios = require('axios');
 
-async function startEvent(evento, web) {
+async function startEvent(evento, web, banca = null) {
   hourEvent = moment(
     evento.date,
     "YYYY-MM-DD HH:mm:ss"
@@ -44,7 +44,19 @@ async function startEvent(evento, web) {
       setTimeout(() => {
         resetSteps(web);
       }, 15000);
-      insert(evento, 'WIN');
+      const accountmoney = await page.locator(".usermenu__info-balance");
+      const afterbanca = await accountmoney.innerText();
+      var after = afterbanca.replace(/£/g, '');
+      if (banca) {
+        if (parseInt(after) > banca) {
+          insert(evento, 'WIN = after');
+        } else if (parseInt(after) < banca) {
+          insert(evento, 'LOSS = after');
+        }
+      } else {
+        insert(evento, 'SEM STATUS');
+
+      }
       deleteEvent(evento);
       console.log('Evento Concluido!!');
 
