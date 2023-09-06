@@ -19,31 +19,24 @@ const PORT = process.env.PORT;
 const job = new CronJob(
     '*/5 * * * *',
     async function () {
-        try {
 
-            const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-
-            if (account[0].search !== 0) {
-                const obj = {
-                    argument: 'start'
-                };
-
-                await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
-                await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
-                return;
-            } else {
-                let data = {
-                    next_event: `Busca`, 
-                    now_date: `permision : ${account[0].search !== 0}`, 
-                    status: ` nao habilitado`
-                }
-                createcron(data);
-                return;
+        const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
+        console.log('executado');
+        if (account[0].search !== 0) {
+            const obj = {
+                argument: 'start'
+            };
+            console.log('encontrado' , account[0].search);
+            await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
+            await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
+        } else {
+            let data = {
+                next_event: `Busca`,
+                now_date: `permision : ${account[0].search !== 0}`,
+                status: ` nao habilitado`
             }
-
-        } catch (error) {
-            console.error('Erro na solicitação Axios:', error.message);
-            return;
+            console.log('erro' , account[0].search);
+            createcron(data);
         }
     },
     null,
