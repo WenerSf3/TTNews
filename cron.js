@@ -36,8 +36,8 @@ const job = new CronJob(
                 return;
             } else {
                 let data = {
-                    next_event: `${account[0].search !== 0}`, 
-                    now_date: `${event.length > 0 }`, 
+                    next_event: `permision : ${account[0].search !== 0}`, 
+                    now_date: `events : ${event.length > 0 }`, 
                     status: `Nao habilitado`
                 }
                 createcron(data)
