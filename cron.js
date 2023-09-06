@@ -25,7 +25,7 @@ const job = new CronJob(
             );
 
             const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-
+            
             if (event.length > 0 && account[0].search !== 0) {
                 const obj = {
                     argument: 'start'
@@ -36,7 +36,7 @@ const job = new CronJob(
                 return;
             } else {
                 let data = {
-                    next_event: `${$IP}:${PORT}`, 
+                    next_event: `${IP}:${PORT}`, 
                     now_date: `${account}`, 
                     status: `${event}`
                 }
