@@ -51,13 +51,15 @@ async function startEvent(evento, web, banca = null) {
             insert(evento, `WIN = ${after}`);
           } else if (parseInt(after) < banca) {
             insert(evento, `LOSS = ${after}`);
+          } else {
+            insert(evento, `SEM STATUS ${after}`);
           }
         } else {
           insert(evento, `SEM STATUS ${after}`);
-  
         }
       }, 15000);
       deleteEvent(evento);
+
       console.log('Evento Concluido!!');
 
     } else {
