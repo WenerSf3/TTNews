@@ -50,7 +50,7 @@ app.post('/preparingEvent', (req, res) => {
 
 app.get('/cron', async (req, res) => {
   const [events] = await database.query(
-    `SELECT * FROM cron ORDER BY id DESC LIMIT 10;`
+    `SELECT * FROM cron ORDER BY id DESC LIMIT 15;`
   );
   return res.status(200).json({ success: true, cron:events });
 

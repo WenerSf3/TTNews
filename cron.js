@@ -4,6 +4,7 @@ const connection = require("./config/connection");
 const { createcron } = require("./config/database");
 const fs = require('fs');
 const dotenv = require('dotenv');
+const moment = require('moment');
 
 let database = connection.promise();
 
@@ -18,25 +19,37 @@ const PORT = process.env.PORT;
 
 const job = new CronJob(
     '*/5 * * * *',
-    async function () {
+    async function main() {
+        try {
+            console.clear();
+            const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
+            console.log('executado');
 
-        const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-        console.log('executado');
-        if (account[0].search !== 0) {
-            const obj = {
-                argument: 'start'
-            };
-            console.log('encontrado' , account[0].search);
-            await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
-            await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
-        } else {
-            let data = {
-                next_event: `Busca`,
-                now_date: `permision : ${account[0].search !== 0}`,
-                status: ` nao habilitado`
+            const [events] = await database.query(`SELECT * FROM events WHERE date > ? AND date < ? AND status = ?;`,[
+                moment().format('YYYY-MM-DD HH:mm:ss'),
+                moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+                'pendente'
+            ]);
+
+            console.log('events', events);
+
+            if (events.length >= 1 && account[0].search !== 0) {
+                const obj = {
+                    argument: 'start'
+                };
+                await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
+                await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
+            } else {
+                let data = {
+                    next_event: `Busca`,
+                    now_date: `permision : ${account[0].search !== 0}`,
+                    status: ` nao habilitado`
+                }
+                createcron(data);
             }
-            console.log('erro' , account[0].search);
-            createcron(data);
+        } catch (error) {
+            console.clear();
+            console.log('deslogado');
         }
     },
     null,

@@ -59,12 +59,9 @@ async function search_event(page, argument) {
       data.status = `Sem eventos! ->`
     }
     if (NowEvent && NowEvent.date) {
-      const accountmoney = await page.locator(".usermenu__info-balance");
-      const banca = await accountmoney.innerText();
-      var valorBanca = banca.replace(/£/g, '');
 
       await AlterCambio(page, NowEvent.active);
-      startEvent(NowEvent, page, parseFloat(valorBanca));
+      startEvent(NowEvent, page);
       data.status = `Encontrado! ->`;
     }
     console.log('criando cronn list')

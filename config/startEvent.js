@@ -3,7 +3,10 @@ const { insert, deleteEvent } = require("./database");
 const moment = require("moment");
 const axios = require('axios');
 
-async function startEvent(evento, web, banca = null) {
+async function startEvent(evento, web) {
+  const accountmoney = await web.locator(".usermenu__info-balance");
+  const banca = await accountmoney.innerText();
+  var valorBanca = banca.replace(/£/g, '');
   hourEvent = moment(
     evento.date,
     "YYYY-MM-DD HH:mm:ss"
@@ -25,7 +28,7 @@ async function startEvent(evento, web, banca = null) {
   let time = setInterval(async () => {
     horarioMoment = horarioMoment.add(1, "second");
     missing = hourEvent.diff(horarioMoment, "seconds");
-    if (missing <= 28 && !started) {
+    if (missing <= 29 && !started) {
       started = true;
       global.price = await getActive(evento.active);
       clearInterval(time);
@@ -41,24 +44,26 @@ async function startEvent(evento, web, banca = null) {
 
       await web.click("#graph");
 
-      setTimeout(async () => {
+      setTimeout(() => {
         resetSteps(web);
-        const accountmoney = await page.locator(".usermenu__info-balance");
+        deleteEvent(evento);
+      }, 16000);
+      setTimeout(async () => {
+        const accountmoney = await web.locator(".usermenu__info-balance");
         const afterbanca = await accountmoney.innerText();
         var after = afterbanca.replace(/£/g, '');
         if (banca) {
-          if (parseInt(after) > banca) {
-            insert(evento, `WIN = ${after == null ? 'NULL' : after }`);
+          if (parseInt(after) > parseInt(valorBanca)) {
+            insert(evento, `WIN = ${after}`);
           } else if (parseInt(after) < banca) {
-            insert(evento, `LOSS = ${after == null ? 'NULL' : after}`);
+            insert(evento, `LOSS = ${after}`);
           } else {
-            insert(evento, `SEM STATUS ${after == null ? 'NULL' : after}`);
+            insert(evento, `SEM STATUS ${after}`);
           }
         } else {
-          insert(evento, `SEM STATUS ${after == null ? 'NULL' : after}`);
+          insert(evento, `SEM STATUS ${after}`);
         }
-      }, 15000);
-      deleteEvent(evento);
+      }, 55000);
 
       console.log('Evento Concluido!!');
 
@@ -72,7 +77,9 @@ async function startEvent(evento, web, banca = null) {
 async function resetSteps() {
   try {
     await axios.post(`http://154.56.41.121:81/closePendent`);
-    await axios.post(`http://154.56.41.121:81/closePendent`);
+    setTimeout(async () => {
+      await axios.post(`http://154.56.41.121:81/closePendent`);
+    }, 1500);
   } catch (error) {
     return;
   }
