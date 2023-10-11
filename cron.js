@@ -20,37 +20,45 @@ const PORT = process.env.PORT;
 const job = new CronJob(
     '*/5 * * * *',
     async function main() {
-        try {
-            console.clear();
-            const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
-            console.log('executado');
+        // try {
+        console.clear();
+        const [account] = await database.query(`SELECT * FROM users LIMIT 1;`);
+        console.log('executado');
 
-            const [events] = await database.query(`SELECT * FROM events WHERE date > ? AND date < ? AND status = ?;`,[
-                moment().format('YYYY-MM-DD HH:mm:ss'),
-                moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
-                'pendente'
-            ]);
+        const [events] = await database.query(`SELECT * FROM events WHERE date > ? AND date < ? AND status = ?;`, [
+            moment().format('YYYY-MM-DD HH:mm:ss'),
+            moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+            'pendente'
+        ]);
 
-            console.log('events', events);
+        console.log('events', events);
 
-            if (events.length >= 1 && account[0].search !== 0) {
-                const obj = {
-                    argument: 'start'
-                };
-                await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
-                await axios.post(`http://${IP}:${PORT}/antiLogout`, obj);
-            } else {
-                let data = {
-                    next_event: `Busca`,
-                    now_date: `permision : ${account[0].search !== 0}`,
-                    status: ` nao habilitado`
-                }
-                createcron(data);
+        if (events.length >= 1 && account[0].search !== 0) {
+            const obj = {
+                argument: 'start'
+            };
+            console.log('iniciou');
+
+            await axios.post(`http://${IP}:${PORT}/TTNstart`);
+            await axios.post(`http://${IP}:${PORT}/preparingEvent`, obj);
+        } else {
+            let obj = {
+                ativo: 'EURUSD'
             }
-        } catch (error) {
-            console.clear();
-            console.log('deslogado');
+            let data = {
+                next_event: `Busca`,
+                now_date: `permision : ${account[0].search !== 0}`,
+                status: ` nao habilitado`
+            }
+            await axios.post(`http://${IP}:${PORT}/alterCambio`, obj);
+            
+
+            createcron(data);
         }
+        // } catch (error) {
+        //     console.clear();
+        //     console.log('deslogado');
+        // }
     },
     null,
     true,

@@ -30,10 +30,12 @@ async function AlterCambio(page, ativo) {
 
 async function search_event(page, argument) {
   if (argument === "start") {
-
-    const [events] = await database.query(
-      `SELECT * FROM events;`
-    );
+    console.log('buscou')
+    const [events] = await database.query(`SELECT * FROM events WHERE date > ? AND date < ? AND status = ?;`,[
+      moment().format('YYYY-MM-DD HH:mm:ss'),
+      moment().add(10, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+      'pendente'
+  ]);
 
     let closestEvent;
     let closestTimeDifference = Infinity;
@@ -53,20 +55,23 @@ async function search_event(page, argument) {
     let NowEvent = closestEvent;
 
     if (NowEvent && NowEvent.date) {
+    console.log('achou')
+
       data.status = `Não encontrado! ->`
       data.next_event = moment(NowEvent.date,'DD-MM-YYYY HH:mm:ss');
     } else {
       data.status = `Sem eventos! ->`
     }
     if (NowEvent && NowEvent.date) {
+    console.log('encontrou')
+
+      data.status = `Encontrado! ->`;
+      createcron(data);
 
       await AlterCambio(page, NowEvent.active);
       startEvent(NowEvent, page);
-      data.status = `Encontrado! ->`;
     }
-    console.log('criando cronn list')
 
-    createcron(data);
     return;
 
   }

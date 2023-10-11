@@ -11,6 +11,7 @@ async function startEvent(evento, web) {
     evento.date,
     "YYYY-MM-DD HH:mm:ss"
   ) /*.subtract(11 , "seconds")*/;
+  console.log('executando')
   const horarioData = await web.$eval(".server-time.online", (element) =>
     element.textContent.trim()
   );
@@ -28,7 +29,7 @@ async function startEvent(evento, web) {
   let time = setInterval(async () => {
     horarioMoment = horarioMoment.add(1, "second");
     missing = hourEvent.diff(horarioMoment, "seconds");
-    if (missing <= 29 && !started) {
+    if (missing <= 62 && !started) {
       started = true;
       global.price = await getActive(evento.active);
       clearInterval(time);
@@ -47,7 +48,7 @@ async function startEvent(evento, web) {
       setTimeout(() => {
         resetSteps(web);
         deleteEvent(evento);
-      }, 16000);
+      }, 40000);
       setTimeout(async () => {
         const accountmoney = await web.locator(".usermenu__info-balance");
         const afterbanca = await accountmoney.innerText();

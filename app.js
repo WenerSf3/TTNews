@@ -9,12 +9,12 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 const { createNewEvent,
-        disableEvents,
-        enableEvents,
-        deleteEvent,
-        getStatus,
-        getEvents,
-        EditEvent } = require('./config/database.js');
+  disableEvents,
+  enableEvents,
+  deleteEvent,
+  getStatus,
+  getEvents,
+  EditEvent } = require('./config/database.js');
 
 if (fs.existsSync('./dev.v')) {
   dotenv.config({ path: '.env.development' });
@@ -52,7 +52,7 @@ app.get('/cron', async (req, res) => {
   const [events] = await database.query(
     `SELECT * FROM cron ORDER BY id DESC LIMIT 15;`
   );
-  return res.status(200).json({ success: true, cron:events });
+  return res.status(200).json({ success: true, cron: events });
 
 });
 
@@ -182,7 +182,38 @@ app.post('/TTNstart', async (req, res) => {
   }
 });
 
+app.get('/propose-god', async (req, res) => {
+  const [propose] = await database.query(
+    `SELECT * FROM propose_god;`
+  );
+  return res.status(200).json({ success: true, propose: propose });
 
+});
+
+app.post('/check-propose', async (req, res) => {
+  const request = req.body;
+
+    if (!request.id) {
+      return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
+    }
+    if(!request.check){
+      request.check = false;
+    }
+
+    const [updatedEvent] = await database.execute(
+      `UPDATE propose_god SET \`check\`=? WHERE id=?`,
+      [request.check, request.id]
+    );
+    const [propose_list] = await database.query(
+      `SELECT * FROM propose_god;`
+    );
+
+    if (updatedEvent.affectedRows === 1) {
+      return res.status(200).json({ success: true, message: 'Registro atualizado com sucesso.' ,propose:propose_list});
+    } else {
+      return res.status(404).json({ error: 'Registro não encontrado.' });
+    }
+});
 
 
 app.post('/createEvent', async (req, res) => {
